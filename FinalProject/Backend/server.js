@@ -25,6 +25,25 @@ app.get(`/admin`, async (req, resp) => {
   resp.send(data);
 });
 
+app.get(
+  `/verifyAdmin/username/:username/password/:password`,
+  async (req, resp) => {
+    let data = await adminModel.findOne(
+      {
+        username: req.params.username,
+        password: req.params.password,
+      },
+      {
+        password: 0,
+      },
+    );
+    if (!data) {
+      return resp.status(401).send({ message: "Invalid username or password" });
+    }
+    resp.send(data);
+  },
+);
+
 // memebership
 app.get(`/memebershipData`, async (req, resp) => {
   let data = await membershipModel.find();
@@ -136,6 +155,16 @@ app.get(`/allProducts`, async (req, resp) => {
   resp.json(data);
 });
 
+app.get(`/selectedProduct/:id`, async (req, resp) => {
+  const data = await productModel
+    .find({ _id: req.params.id })
+    .populate("themeId")
+    .populate("catId")
+    .populate("typeId");
+
+  resp.json(data);
+});
+
 app.post(`/addProduct`, async (req, resp) => {
   let data = new productModel(req.body);
   let result = data.save();
@@ -158,6 +187,26 @@ app.delete(`/deleteProduct/:id`, async (req, resp) => {
 // users
 app.get(`/user/:id`, async (req, resp) => {
   let data = await userModel.find({ _id: req.params.id }).populate("plan");
+  resp.send(data);
+});
+
+app.get(`/Verify/Username/:username/password/:password`, async (req, resp) => {
+  let data = await userModel
+    .findOne(
+      {
+        name: req.params.username,
+        password: req.params.password,
+      },
+      {
+        password: 0,
+      },
+    )
+    .populate("plan");
+
+  if (!data) {
+    return resp.status(401).send({ message: "Invalid username or password" });
+  }
+
   resp.send(data);
 });
 
