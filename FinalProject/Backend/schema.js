@@ -4,6 +4,7 @@ const adminSchema = new mongoose.Schema(
   {
     username: String,
     password: String,
+    securityCode: Number,
   },
   { collection: "AdminInfo" },
 );
@@ -23,14 +24,16 @@ const userSchema = new mongoose.Schema(
     name: String,
     password: String,
     address: {
-      home: String,
-      office: String,
+      home: { type: String, required: false },
+      office: { type: String, required: false },
     },
     plan: {
       type: mongoose.Schema.Types.ObjectId,
       ref: `membershipinfo`,
       required: true,
     },
+
+    email: String,
   },
   { collection: "Users" },
 );

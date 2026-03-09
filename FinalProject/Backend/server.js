@@ -25,24 +25,30 @@ app.get(`/admin`, async (req, resp) => {
   resp.send(data);
 });
 
-app.get(
-  `/verifyAdmin/username/:username/password/:password`,
-  async (req, resp) => {
-    let data = await adminModel.findOne(
-      {
-        username: req.params.username,
-        password: req.params.password,
-      },
-      {
-        password: 0,
-      },
-    );
-    if (!data) {
+app.post("/loginAdmin", async (req, resp) => {
+  try {
+    const { username, password, securityCode } = req.body;
+    let admin = await adminModel.findOne({ username });
+
+    if (!admin) {
       return resp.status(401).send({ message: "Invalid username or password" });
     }
-    resp.send(data);
-  },
-);
+    if (admin.password !== password) {
+      return resp.status(401).send({ message: "Invalid username or password" });
+    }
+    if (admin.securityCode !== securityCode) {
+      return resp.status(401).send({ message: "Invalid securityCode" });
+    }
+
+    resp.send({
+      name: admin.username,
+      _id: admin._id,
+    });
+  } catch (error) {
+    console.log(error);
+    resp.status(500).send(error);
+  }
+});
 
 // memebership
 app.get(`/memebershipData`, async (req, resp) => {
@@ -190,24 +196,30 @@ app.get(`/user/:id`, async (req, resp) => {
   resp.send(data);
 });
 
-app.get(`/Verify/Username/:username/password/:password`, async (req, resp) => {
-  let data = await userModel
-    .findOne(
-      {
-        name: req.params.username,
-        password: req.params.password,
-      },
-      {
-        password: 0,
-      },
-    )
-    .populate("plan");
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
 
-  if (!data) {
-    return resp.status(401).send({ message: "Invalid username or password" });
+    const user = await userModel.findOne({ name: username }).populate("plan");
+
+    if (!user) {
+      return res.status(401).send({ message: "Invalid username or password" });
+    }
+
+    if (user.password !== password) {
+      return res.status(401).send({ message: "Invalid username or password" });
+    }
+
+    const userData = {
+      id: user._id,
+      name: user.name,
+      plan: user.plan,
+    };
+
+    res.send(userData);
+  } catch (err) {
+    res.status(500).send(err);
   }
-
-  resp.send(data);
 });
 
 app.post(`/adduser`, async (req, resp) => {
