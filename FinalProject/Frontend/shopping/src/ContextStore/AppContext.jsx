@@ -13,7 +13,9 @@ export const ContextProvider = ({ children }) => {
   let [loggedIn, setLoggedIn] = useState(false);
 
   let [allThemes, setAllThemes] = useState(null);
-  let [activeTheme, setActiveTheme] = useState(null);
+  let [activeTheme, setActiveTheme] = useState("69b7b68db93b68ec6f3180e8");
+  let [allCategorys, setAllCategorys] = useState(null);
+  let [allProducts, setAllProducts] = useState(null);
 
   let [selectedGender, setSelectedGender] = useState("male");
 
@@ -29,6 +31,18 @@ export const ContextProvider = ({ children }) => {
       setAllThemes(result.data);
     };
     theme();
+
+    let Categorys = async () => {
+      let result = await axios.get("http://localhost:5000/categorys");
+      setAllCategorys(result.data);
+    };
+    Categorys();
+
+    let Product = async () => {
+      let result = await axios.get("http://localhost:5000/product/allProducts");
+      setAllProducts(result.data);
+    };
+    Product();
   }, []);
 
   const value = {
@@ -48,6 +62,8 @@ export const ContextProvider = ({ children }) => {
     setActiveTheme,
     selectedGender,
     setSelectedGender,
+    allCategorys,
+    setAllCategorys,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

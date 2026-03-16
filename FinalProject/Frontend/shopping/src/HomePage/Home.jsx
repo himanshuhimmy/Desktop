@@ -1,14 +1,15 @@
 import React from "react";
 import HeadderPage from "../Headder&footer/headderPage";
-import ThemeDisplay from "./ThemeModlue/ThemeDisplay";
-import FilteredThemeProducts from "./ThemeModlue/FilteredThemeProducts";
+
+import FooterPage from "../Headder&footer/FooterPage";
+import { Outlet } from "react-router-dom";
 
 const Home = () => {
   return (
     <div>
       <HeadderPage />
-      <ThemeDisplay />
-      <FilteredThemeProducts />
+      <Outlet />
+      <FooterPage />
     </div>
   );
 };

@@ -7,7 +7,7 @@ import loginImage from "./../assets/Register&loginPages/userLogin.png";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const UserLogin = () => {
-  let { inputText, setLoggedIn, setInputText, userData, setUserData } =
+  let { inputText, setLoggedIn, setInputText, setUserData } =
     useContext(AppContext);
   function onChangeHandle(value, field) {
     setInputText((prev) => ({ ...prev, [field]: value }));
@@ -15,9 +15,6 @@ const UserLogin = () => {
 
   let navigate = useNavigate();
   async function handleLogin() {
-    if (inputText === null) {
-      return;
-    }
     try {
       const resp = await axios.post("http://localhost:5000/login", {
         username: inputText.username,
@@ -32,7 +29,7 @@ const UserLogin = () => {
       console.error(error);
     }
   }
-  console.log(userData);
+
   function HandleCreateAccount() {
     console.log("clicked");
     navigate("/UserRegister");

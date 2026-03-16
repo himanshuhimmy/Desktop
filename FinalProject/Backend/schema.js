@@ -15,6 +15,7 @@ const memebershipSchema = new mongoose.Schema(
     duration: String,
     discount: String,
     tear: String,
+    perks: Array,
   },
   { collection: "membershipinfo" },
 );
@@ -40,7 +41,7 @@ const userSchema = new mongoose.Schema(
 
 let categorySchema = new mongoose.Schema(
   {
-    cat: "string",
+    cat: String,
   },
   { collection: "categorys" },
 );
@@ -65,24 +66,67 @@ let productThemeSchema = new mongoose.Schema(
   { collection: "producttheme" },
 );
 
+const variantSchema = new mongoose.Schema(
+  {
+    gender: {
+      type: String,
+      enum: ["male", "female", "kids"],
+      required: true,
+    },
+
+    size: {
+      type: String,
+      enum: ["S", "M", "L", "XL"],
+      required: true,
+    },
+
+    stock: {
+      type: Number,
+      required: true,
+    },
+
+    images: {
+      display: {
+        type: String,
+        required: true,
+      },
+
+      poses: [
+        {
+          type: String,
+        },
+      ],
+    },
+  },
+  { _id: false },
+);
+
 let productSchema = new mongoose.Schema(
   {
     quantity: Number,
-    price: Number,
-    size: String,
+
+    price: {
+      type: Number,
+      required: true,
+    },
+
+    variants: [variantSchema],
+
     themeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: `producttheme`,
+      ref: "producttheme",
       required: true,
     },
+
     catId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: `categorys`,
+      ref: "categorys",
       required: true,
     },
+
     typeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: `producttypes`,
+      ref: "producttypes",
       required: true,
     },
   },

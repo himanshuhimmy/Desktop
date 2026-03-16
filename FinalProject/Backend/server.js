@@ -3,14 +3,12 @@ import express from "express";
 import cors from "cors";
 
 import {
-  adminModel,
-  userModel,
-  membershipModel,
   categoryModel,
   productTypeModel,
   productThemeModel,
   productModel,
-  cartModel,
+  membershipModel,
+  userModel,
 } from "./schema.js";
 
 const app = express();
@@ -113,7 +111,7 @@ app.post(`/addProduct`, async (req, resp) => {
 });
 
 app.put(`/editProduct/:id`, async (req, resp) => {
-  let data = awaitproductTypeModel.updateOne(
+  let data = await productTypeModel.updateOne(
     { _id: req.params.id },
     { $set: req.body },
   );
