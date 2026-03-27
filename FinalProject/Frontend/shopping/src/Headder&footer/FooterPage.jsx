@@ -33,14 +33,14 @@ const FooterPage = () => {
       <div>
         <h1 className={title}>Themes</h1>
         {allThemes !== null &&
-          allThemes.map((themes) => {
+          allThemes.themes.map((themes) => {
             return (
               <p>
                 <button
                   onClick={() => handleOnClickTheme(themes._id)}
                   className={` ${themes._id === activeTheme ? "mb-1 font-normal text-[rgb(35,63,143)]" : subtitle}`}
                 >
-                  {themes.theme}
+                  {themes.name}
                 </button>
               </p>
             );

@@ -7,35 +7,33 @@ import Dc from "./../../assets/HomePage/Themes/DC.jpg";
 import AppContext from "../../ContextStore/AppContext";
 
 const themeImages = {
-  "69b7b68db93b68ec6f3180e9": strangerthings,
-  "69b7b68db93b68ec6f3180e6": harrypotter,
-  "69b7b68db93b68ec6f3180ea": regular,
-  "69b7b68db93b68ec6f3180e7": Marvel,
-  "69b7b68db93b68ec6f3180e8": Dc,
+  "69c0314c912b0ce5a0292afd": strangerthings,
+  "69c0314c912b0ce5a0292afe": harrypotter,
+  "69c0314c912b0ce5a0292b00": regular,
+  "69c0314c912b0ce5a0292aff": Marvel,
+  "69c0314c912b0ce5a0292afc": Dc,
 };
 
 const ThemeDisplay = () => {
   const { allThemes, activeTheme, setActiveTheme } = useContext(AppContext);
 
   const currentTheme = themeImages[activeTheme] || Dc;
-  console.log(allThemes);
+
   return (
     <div>
       <div className="w-[90%] m-auto mt-5 h-125 overflow-hidden rounded-3xl relative">
-        {/* ✅ key prop forces remount on theme change */}
         <img
           key={activeTheme}
           className="w-full h-full object-cover transition-opacity duration-300"
           src={currentTheme}
           alt="theme banner"
         />
-
         <p className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20">
           {allThemes &&
-            allThemes.map((theme) => (
+            allThemes.themes.map((theme) => (
               <button
                 key={theme._id}
-                onClick={() => setActiveTheme(theme._id)} // ✅ directly pass the id string
+                onClick={() => setActiveTheme(theme._id)}
                 className="text-white cursor-pointer"
               >
                 <p
@@ -45,7 +43,7 @@ const ThemeDisplay = () => {
                       : ""
                   }`}
                 >
-                  {theme.theme}
+                  {theme.name}
                 </p>
               </button>
             ))}

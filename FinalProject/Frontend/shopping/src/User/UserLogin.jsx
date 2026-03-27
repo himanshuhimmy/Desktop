@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
 import AppContext, { ContextProvider } from "../ContextStore/AppContext";
@@ -7,7 +7,7 @@ import loginImage from "./../assets/Register&loginPages/userLogin.png";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const UserLogin = () => {
-  let { inputText, setLoggedIn, setInputText, setUserData } =
+  let { inputText, setLoggedIn, setInputText, setUserData, loggedIn } =
     useContext(AppContext);
   function onChangeHandle(value, field) {
     setInputText((prev) => ({ ...prev, [field]: value }));
@@ -16,15 +16,14 @@ const UserLogin = () => {
   let navigate = useNavigate();
   async function handleLogin() {
     try {
-      const resp = await axios.post("http://localhost:5000/login", {
-        username: inputText.username,
+      const resp = await axios.post("http://localhost:5000/api/auth/login", {
+        email: inputText.email,
         password: inputText.password,
       });
 
-      setUserData(resp.data);
+      setUserData(resp.data.user);
       setInputText(null);
       setLoggedIn(true);
-      navigate("/Home");
     } catch (error) {
       console.error(error);
     }
@@ -50,7 +49,7 @@ const UserLogin = () => {
           <div className="w-[60%] m-auto">
             <p>Username</p>
             <InputBar
-              onChange={(e) => onChangeHandle(e.target.value, "username")}
+              onChange={(e) => onChangeHandle(e.target.value, "email")}
               placeholder="Username"
               type="text"
             />

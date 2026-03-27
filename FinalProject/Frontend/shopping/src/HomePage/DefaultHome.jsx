@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import ThemeDisplay from "./ThemeModlue/ThemeDisplay";
-import FilteredThemeProducts from "./ThemeModlue/FilteredThemeProducts";
+import AllCategory from "./ThemeModlue/AllCategory";
+import FilteredProducts from "./ThemeModlue/FilteredProducts";
+import AppContext from "../ContextStore/AppContext";
 
 const DefaultHome = () => {
+  const { allProducts, allThemes, allCategorys } = useContext(AppContext);
+
   return (
     <div>
       <ThemeDisplay />
-      <FilteredThemeProducts />
+      <AllCategory />
+      <FilteredProducts />
     </div>
   );
 };

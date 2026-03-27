@@ -32,42 +32,53 @@ const MembErshipPage = () => {
   ];
 
   const tierColors = {
-    gold: "text-yellow-400",
-    silver: "text-gray-300",
-    basic: "text-orange-500",
-    platinum: "text-[#3e62e0]",
+    Hero: "text-yellow-400",
+    Fan: "text-gray-300",
+    Free: "text-orange-500",
+    Legend: "text-[#3e62e0]",
   };
 
   const bgColours = {
-    gold: "bg-white",
-    silver: "bg-[#fcfffe]",
-    Basic: "bg-white",
-    platinum:
+    Hero: "bg-white",
+    Fan: "bg-[#fcfffe]",
+    Free: "bg-white",
+    Legend:
       "bg-gradient-to-br from-[#0a1a3a] to-[#0f2a63] rounded-2xl p-8 text-white",
   };
 
   const borderColour = {
-    gold: "border border-yellow-400",
-    silver: "border border-gray-300",
-    basic: "border border-gray-300",
-    platinum: "border border-blue-500",
+    Hero: "border border-yellow-400",
+    Fan: "border border-gray-300",
+    Free: "border border-gray-300",
+    Legend: "border border-blue-500",
   };
 
   let buttonColour = {
-    gold: "bg-gradient-to-r from-[#f7b718] to-[#e07b00] text-white px-2 py-3 rounded-xl",
-    silver:
-      "bg-gradient-to-r from-[#8a99ad] to-[#6b7b92] text-white px-2 py-3 rounded-xl",
-    basic:
-      "bg-gradient-to-r from-[#0b1730] to-[#0e1f45] text-white px-2 py-3 rounded-xl",
-    platinum:
+    Hero: "bg-gradient-to-r from-[#f7b718] to-[#e07b00] text-white px-2 py-3 rounded-xl",
+    Fan: "bg-gradient-to-r from-[#8a99ad] to-[#6b7b92] text-white px-2 py-3 rounded-xl",
+    Free: "bg-gradient-to-r from-[#0b1730] to-[#0e1f45] text-white px-2 py-3 rounded-xl",
+    Legend:
       "bg-gradient-to-r from-[#2d63ff] to-[#1f4ed8] text-white px-2 py-3 rounded-xl",
+  };
+
+  const formatDuration = (days) => {
+    if (days >= 36500) return "Lifetime";
+    if (days >= 365) {
+      const years = Math.floor(days / 365);
+      return `${years} year${years > 1 ? "s" : ""}`;
+    } else if (days >= 30) {
+      const months = Math.floor(days / 30);
+      return `${months} month${months > 1 ? "s" : ""}`;
+    } else {
+      return `${days} day${days > 1 ? "s" : ""}`;
+    }
   };
 
   return (
     <div className="bg-[#f6f6f8] p-5">
       <div className="w-[90%] m-auto p-7 ">
         <div className="text-center w-[50%] m-auto mb-5">
-          <p className="text-[#2960cb] mb-2">Premium Membership</p>
+          <p className="text-[#2960cb] mb-2 underline">Premium Membership</p>
           <h1 className="text-4xl font-extrabold mb-1">
             Choose Your LUXE Tier
           </h1>
@@ -76,29 +87,30 @@ const MembErshipPage = () => {
             collections, and priority support tailored for your lifestyle
           </p>
         </div>
-
         <div className="p-4  flex justify-around ">
           {membershipInfo !== null &&
-            membershipInfo.map((info) => {
+            membershipInfo.memberships.map((info) => {
               return (
                 <div
                   key={info._id}
-                  className={`w-[23%] p-5 ${borderColour[info.tear]} rounded-2xl ${bgColours[info.tear]} shadow-2xl`}
+                  className={`w-[23%] p-5 ${borderColour[info.name]} rounded-2xl ${bgColours[info.name]} shadow-2xl`}
                 >
                   <div className={``}>
-                    <h1 className={`${tierColors[info.tear]} text-xl mb-4`}>
-                      {info.tear}
+                    <h1
+                      className={`${tierColors[info.name]} text-xl mb-4 font-bold`}
+                    >
+                      {info.name}
                     </h1>
                     <div className="flex mb-4">
                       <h1 className="text-4xl font-semibold">
                         RS {info.price}
                       </h1>
                       <p className="text-[#959eaa] font-extralight  flex items-end ">
-                        / {info.duration}
+                        /{formatDuration(info.durationDays)}
                       </p>
                     </div>
                     <div className="mx-5 text-center">
-                      <button className={buttonColour[info.tear]}>
+                      <button className={buttonColour[info.name]}>
                         Select Plan
                       </button>
                     </div>

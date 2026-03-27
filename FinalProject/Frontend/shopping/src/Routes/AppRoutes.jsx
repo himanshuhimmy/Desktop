@@ -16,37 +16,45 @@ import MembErshipPage from "../MembershipModule/MembErshipPage";
 import UserProfile from "../User/UserProfile";
 import UserProfilePage from "../User/UserProfilePage";
 
+import CartPage from "../User/CartSection/CartPage";
+import WishListPage from "../User/WishlistSection/WishListPage";
+import ProductDetails from "../Product/ProductDetails";
+import ProductPage from "../Product/ProductPage";
+
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Public only routes */}
       <Route element={<PublicRoutes />}>
+        <Route index element={<UserLogin />} />
         <Route path="/UserRegister" element={<RegisterUserPage />} />
-        <Route path="/userLogin" element={<UserLogin />} />
         <Route path="/AdminLogin" element={<AdminLoginPage />} />
 
-        <Route path="/Home" element={<Home />}>
-          <Route index element={<DefaultHome />} />
-          <Route path="Membership" element={<MembErshipPage />} />
-        </Route>
-
-        {/* SUPPORT LAYOUT */}
         <Route path="/support" element={<Support />}>
           <Route path="contact" element={<ContactUs />} />
           <Route path="terms" element={<TermsConditions />} />
           <Route path="policy" element={<Policy />} />
         </Route>
+      </Route>
 
+      {/* ✅ Home is outside PublicRoutes */}
+      <Route path="/Home" element={<Home />}>
+        <Route index element={<DefaultHome />} />
+        <Route path="Membership" element={<MembErshipPage />} />
+        <Route path="ProductPage" element={<ProductPage />} />
+      </Route>
+
+      {/* Protected routes */}
+      <Route element={<ProtectedRoutes />}>
         <Route path="/UserProfile" element={<UserProfilePage />}>
           <Route index element={<UserProfile />} />
+          <Route path="Wishlist" element={<WishListPage />} />
+          <Route path="UserCart" element={<CartPage />} />
         </Route>
       </Route>
 
-      <Route element={<ProtectedRoutes />}></Route>
-
-      {/* Catch all wrong URLs */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
-
 export default AppRoutes;

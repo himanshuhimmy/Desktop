@@ -6,7 +6,7 @@ const ProtectedRoutes = () => {
   let { loggedIn } = useContext(AppContext);
   console.log(loggedIn);
   let isAuth = loggedIn;
-  return isAuth ? <Outlet /> : <Navigate to="/userLogin" />;
+  return isAuth ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default ProtectedRoutes;
