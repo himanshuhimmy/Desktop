@@ -4,10 +4,11 @@ import Button from "../CommonUi/Button";
 import AppContext from "../ContextStore/AppContext";
 import axios from "axios";
 import adminLoginPhoto from "./../assets/Register&loginPages/AdminLogin.jpg";
+import { AdminContext } from "../ContextStore/AdminContext";
 
 const AdminLogin = () => {
-  let { inputText, setInputText, adminData, setAdminData } =
-    useContext(AppContext);
+  let { inputText, setInputText } = useContext(AppContext);
+  let { adminData, setAdminData } = useContext(AdminContext);
   function onChangeHandle(value, field) {
     setInputText((prev) => ({ ...prev, [field]: value }));
   }
@@ -17,19 +18,18 @@ const AdminLogin = () => {
       return;
     }
     let data = async () => {
-      let response = await axios.post("http://localhost:5000/loginAdmin", {
+      let response = await axios.post("http://localhost:5000/api/admin/login", {
         username: inputText.username,
         password: inputText.password,
-        securityCode: Number(inputText.securityCode),
       });
 
       setAdminData(response.data);
       setInputText(null);
+      setAdminLoggedIn(true);
     };
     data();
   }
 
-  console.log(adminData);
   return (
     <div className="flex justify-center items-center  min-h-screen ">
       <div className="flex w-[80%] rounded-3xl shadow-2xl h-[90vh]   overflow-hidden">
@@ -49,7 +49,7 @@ const AdminLogin = () => {
               type="text"
             />
           </div>
-          <div>
+          <div className="mb-5">
             <p>Password</p>
             <InputBar
               onChange={(e) => onChangeHandle(e.target.value, "password")}
@@ -57,17 +57,7 @@ const AdminLogin = () => {
               type="password"
             />
           </div>
-          <div className="mb-4">
-            <p>2FA Security Code</p>
-            <InputBar
-              onChange={(e) => onChangeHandle(e.target.value, "securityCode")}
-              placeholder="0 0 0 0 0"
-              type="password"
-            />
-          </div>
-
           <Button onClick={handleAdminLogin}>Access Dashboard</Button>
-
           <div className=" flex justify-around my-6">
             <p> public Global Node: NYC-01</p>
             <p> verified_user SSL Encrypted </p>
@@ -75,9 +65,9 @@ const AdminLogin = () => {
           </div>
         </div>
 
-        <div className="w-[50%]">
+        <div className="w-[50%] overflow-hidden">
           <img
-            className="w-full  h-full object-cover"
+            className="w-full  h-full object-cover hover:scale-110 transition-all duration-500 opacity-95"
             src={adminLoginPhoto}
             alt="img"
           />

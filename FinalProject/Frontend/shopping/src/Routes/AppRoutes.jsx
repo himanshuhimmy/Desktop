@@ -20,15 +20,26 @@ import CartPage from "../User/CartSection/CartPage";
 import WishListPage from "../User/WishlistSection/WishListPage";
 import ProductDetails from "../Product/ProductDetails";
 import ProductPage from "../Product/ProductPage";
+import { AdminContextProvider } from "../ContextStore/AdminContext";
+import AdminLayout from "../Admin/AdminHome/AdminLayout";
 
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route
+        path="/Admin/*"
+        element={
+          <AdminContextProvider>
+            <AdminLayout />
+          </AdminContextProvider>
+        }
+      ></Route>
+
+      <Route path="/AdminLogin" element={<AdminLoginPage />} />
       {/* Public only routes */}
       <Route element={<PublicRoutes />}>
         <Route index element={<UserLogin />} />
         <Route path="/UserRegister" element={<RegisterUserPage />} />
-        <Route path="/AdminLogin" element={<AdminLoginPage />} />
 
         <Route path="/support" element={<Support />}>
           <Route path="contact" element={<ContactUs />} />
