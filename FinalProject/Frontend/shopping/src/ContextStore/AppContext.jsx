@@ -36,11 +36,11 @@ export const ContextProvider = ({ children }) => {
   let [selectedGender, setSelectedGender] = useState("male");
 
   let [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart") || null),
+    JSON.parse(localStorage.getItem("cart")) || null,
   );
 
   let [wishList, setWishList] = useState(
-    JSON.parse(localStorage.getItem("wishList") || null),
+    JSON.parse(localStorage.getItem("wishList")) || null,
   );
 
   useEffect(() => {
@@ -92,6 +92,13 @@ export const ContextProvider = ({ children }) => {
   }, [selectedProductId]);
 
   useEffect(() => {
+    localStorage.setItem("userData", JSON.stringify(userData));
+    localStorage.setItem("userAddress", JSON.stringify(userAddress));
+    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem("wishList", JSON.stringify(wishList));
+  }, [userData, userAddress, cart, wishList]);
+
+  useEffect(() => {
     if (!userData?.id) return;
 
     let result = async () => {
@@ -117,13 +124,16 @@ export const ContextProvider = ({ children }) => {
   }, [userData?.id, refresh]);
 
   useEffect(() => {
-    let id = userData.id;
+    if (!userData?.id) return;
+
     let data = async () => {
-      let result = await axios.get(`http://localhost:5000/api/users/${id}`);
+      let result = await axios.get(
+        `http://localhost:5000/api/users/${userData.id}`,
+      );
       setUserAddress(result.data);
     };
     data();
-  }, [userData]);
+  }, [userData?.id]);
 
   useEffect(() => {
     localStorage.setItem("userData", JSON.stringify(userData));

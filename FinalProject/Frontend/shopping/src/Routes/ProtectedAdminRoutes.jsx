@@ -6,9 +6,7 @@ import AdminLayout from "../Admin/AdminHome/AdminLayout";
 const ProtectedAdminRoutes = () => {
   let { adminLoggedIn, setAdminLoggedIn } = useContext(AdminContext);
 
-  let loggedIn = adminLoggedIn;
-
-  return loggedIn ? <AdminLayout /> : <Navigate to="/" />;
+  return adminLoggedIn ? <AdminLayout /> : <Navigate to="/AdminLogin" />;
 };
 
 export default ProtectedAdminRoutes;

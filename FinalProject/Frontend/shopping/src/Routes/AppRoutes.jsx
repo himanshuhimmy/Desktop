@@ -22,18 +22,13 @@ import ProductDetails from "../Product/ProductDetails";
 import ProductPage from "../Product/ProductPage";
 import { AdminContextProvider } from "../ContextStore/AdminContext";
 import AdminLayout from "../Admin/AdminHome/AdminLayout";
+import ProtectedAdminRoutes from "../Routes/ProtectedAdminRoutes";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route
-        path="/Admin/*"
-        element={
-          <AdminContextProvider>
-            <AdminLayout />
-          </AdminContextProvider>
-        }
-      ></Route>
+      <Route path="/AdminLogin" element={<AdminLoginPage />} />
+      <Route path="/Admin/" element={<ProtectedAdminRoutes />} />
 
       <Route path="/AdminLogin" element={<AdminLoginPage />} />
       {/* Public only routes */}

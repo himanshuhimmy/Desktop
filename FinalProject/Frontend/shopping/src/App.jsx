@@ -10,16 +10,17 @@ import HeadderPage from "./Headder&footer/headderPage";
 import RegisterUserPage from "./User/RegisterUserPage";
 import AdminLoginPage from "./Admin/AdminLoginPage";
 import AppRoutes from "./Routes/AppRoutes";
+import { AdminContextProvider } from "./ContextStore/AdminContext";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <>
+    <AdminContextProvider>
       <ContextProvider>
         <AppRoutes />
       </ContextProvider>
-    </>
+    </AdminContextProvider>
   );
 }
 

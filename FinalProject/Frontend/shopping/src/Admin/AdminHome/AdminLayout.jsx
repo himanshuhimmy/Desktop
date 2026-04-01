@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import HeadderPage from "../../Headder&footer/headderPage";
 
 const AdminLayout = () => {
+  console.log("laypout");
   return (
     <>
       <HeadderPage />

@@ -8,7 +8,7 @@ import { AdminContext } from "../ContextStore/AdminContext";
 
 const AdminLogin = () => {
   let { inputText, setInputText } = useContext(AppContext);
-  let { adminData, setAdminData } = useContext(AdminContext);
+  let { setAdminData } = useContext(AdminContext);
   function onChangeHandle(value, field) {
     setInputText((prev) => ({ ...prev, [field]: value }));
   }
