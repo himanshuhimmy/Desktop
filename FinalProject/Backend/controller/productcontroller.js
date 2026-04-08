@@ -68,14 +68,33 @@ export const createProduct = async (req, res) => {
 //! PUT /api/products/:id
 export const updateProduct = async (req, res) => {
   try {
-    const product = await productModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true },
-    );
-    if (!product) return res.status(404).json({ message: "Product not found" });
+    // fetch current product to preserve variant images
+    const existing = await productModel.findById(req.params.id);
+    if (!existing)
+      return res.status(404).json({ message: "Product not found" });
+
+    const body = { ...req.body };
+
+    // merge images from existing variants into incoming variants
+    if (body.variants) {
+      body.variants = body.variants.map((incomingVariant, idx) => {
+        const existingVariant = existing.variants[idx];
+        return {
+          ...incomingVariant,
+          images: existingVariant?.images ?? { display: "", poses: [] },
+          _id: existingVariant?._id, // preserve _id
+        };
+      });
+    }
+
+    const product = await productModel.findByIdAndUpdate(req.params.id, body, {
+      new: true,
+      runValidators: true,
+    });
+
     res.status(200).json({ product });
   } catch (err) {
+    console.log("UPDATE ERROR:", err.message);
     res.status(500).json({ message: err.message });
   }
 };

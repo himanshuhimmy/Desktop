@@ -4,12 +4,14 @@ import adminModel from "../models/adminSchema.js";
 import userModel from "../models/userSchema.js";
 import orderModel from "../models/orderSchema.js";
 import productModel from "../models/productSchema.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const createAdminToken = (admin) =>
   jwt.sign(
     { adminId: admin._id, username: admin.username, role: admin.role },
     process.env.JWT_SECRET,
-    { expiresIn: "1d" }, // shorter expiry for admin tokens
+    { expiresIn: "1d" },
   );
 
 //! POST /api/admin/login  (public)
@@ -28,11 +30,14 @@ export const adminLogin = async (req, res) => {
       return res.status(403).json({ message: "Account deactivated" });
 
     const token = createAdminToken(admin);
+
     res.status(200).json({
       token,
       admin: { id: admin._id, username: admin.username, role: admin.role },
     });
   } catch (err) {
+    console.log("Error:", err.message);
+    console.log("Request body:", req.body);
     res.status(500).json({ message: err.message });
   }
 };

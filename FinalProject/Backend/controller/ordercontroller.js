@@ -5,27 +5,21 @@ const getUserId = (req) => req.body.userId || req.query.userId;
 //! GET /api/orders?userId=abc123   (pass userId to filter by user, omit to get all)
 export const getAllOrders = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
+    const userId = req.query.userId || null;
 
-    const userId = getUserId(req);
     const filter = userId ? { userId } : {};
 
     const [orders, total] = await Promise.all([
-      orderModel
-        .find(filter)
-        .populate("userId", "name email")
-        .skip(skip)
-        .limit(limit)
-        .sort({ placedAt: -1 }),
+      orderModel.find(filter).populate("userId", "name email"),
       orderModel.countDocuments(filter),
     ]);
 
-    res
-      .status(200)
-      .json({ orders, total, page, pages: Math.ceil(total / limit) });
+    res.status(200).json({
+      orders,
+      total,
+    });
   } catch (err) {
+    console.error("ERROR:", err);
     res.status(500).json({ message: err.message });
   }
 };

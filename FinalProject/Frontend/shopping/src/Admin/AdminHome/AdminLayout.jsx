@@ -4,19 +4,22 @@ import { Outlet } from "react-router-dom";
 import HeadderPage from "../../Headder&footer/headderPage";
 
 const AdminLayout = () => {
-  console.log("laypout");
   return (
-    <>
-      <HeadderPage />
-      <div className="flex">
-        <div className="w-[35%]">
+    <div className="flex flex-col h-screen overflow-hidden">
+      <div className="z-20">{/* <HeadderPage /> */}</div>
+
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="w-64 shrink-0 border-r border-gray-100 shadow-sm">
           <SideBar />
-        </div>
-        <div className="w-[65%]">
-          <Outlet />
-        </div>
+        </aside>
+
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
+          <div className="max-w-7xl m-auto">
+            <Outlet />
+          </div>
+        </main>
       </div>
-    </>
+    </div>
   );
 };
 

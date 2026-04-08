@@ -13,6 +13,7 @@ import cartRoutes from "./Routes/cart.routes.js";
 import wishlistRoutes from "./Routes/wishlist.routes.js";
 import orderRoutes from "./Routes/order.routes.js";
 import adminRoutes from "./Routes/admin.routes.js";
+import productTypeRoutes from "./Routes/productType.Routes.js";
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/producttypes", productTypeRoutes);
 
 // ─── 404 handler — catches any route that didn't match above ───────────────────
 

@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { AdminContext } from "../ContextStore/AdminContext";
 
-import AdminLayout from "../Admin/AdminHome/AdminLayout";
-
 const ProtectedAdminRoutes = () => {
-  let { adminLoggedIn, setAdminLoggedIn } = useContext(AdminContext);
+  const { adminLoggedIn } = useContext(AdminContext);
 
-  return adminLoggedIn ? <AdminLayout /> : <Navigate to="/AdminLogin" />;
+  return adminLoggedIn ? <Outlet /> : <Navigate to="/AdminLogin" />;
 };
 
 export default ProtectedAdminRoutes;

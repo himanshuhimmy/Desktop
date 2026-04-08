@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import React, { useContext } from "react";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
@@ -8,15 +9,18 @@ import { AdminContext } from "../ContextStore/AdminContext";
 
 const AdminLogin = () => {
   let { inputText, setInputText } = useContext(AppContext);
-  let { setAdminData } = useContext(AdminContext);
+  let { setAdminData, adminLoggedIn, setAdminLoggedIn } =
+    useContext(AdminContext);
   function onChangeHandle(value, field) {
     setInputText((prev) => ({ ...prev, [field]: value }));
   }
 
+  const navigate = useNavigate();
   function handleAdminLogin() {
     if (inputText === null) {
       return;
     }
+
     let data = async () => {
       let response = await axios.post("http://localhost:5000/api/admin/login", {
         username: inputText.username,
@@ -25,11 +29,13 @@ const AdminLogin = () => {
 
       setAdminData(response.data);
       setInputText(null);
+
       setAdminLoggedIn(true);
+      navigate("/Admin/dashboard");
     };
     data();
   }
-
+  console.log(adminLoggedIn);
   return (
     <div className="flex justify-center items-center  min-h-screen ">
       <div className="flex w-[80%] rounded-3xl shadow-2xl h-[90vh]   overflow-hidden">

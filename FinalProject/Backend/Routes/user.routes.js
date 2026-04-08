@@ -5,6 +5,7 @@ import {
   updateUser,
   changePassword,
   deleteUser,
+  getAllUsers,
 } from "../controller/usercontroller.js";
 import {
   getAddresses,
@@ -15,6 +16,7 @@ import {
 
 const router = express.Router();
 
+router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 router.patch("/:id", updateUser);
 router.patch("/:id/password", changePassword);

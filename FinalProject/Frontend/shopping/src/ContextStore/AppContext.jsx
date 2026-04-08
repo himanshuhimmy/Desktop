@@ -121,6 +121,12 @@ export const ContextProvider = ({ children }) => {
       setCart(FetchedUserCart.data);
     };
     cartFetch();
+
+    let Product = async () => {
+      let result = await axios.get("http://localhost:5000/api/products");
+      setAllProducts(result.data);
+    };
+    Product();
   }, [userData?.id, refresh]);
 
   useEffect(() => {

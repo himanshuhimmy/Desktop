@@ -23,14 +23,43 @@ import ProductPage from "../Product/ProductPage";
 import { AdminContextProvider } from "../ContextStore/AdminContext";
 import AdminLayout from "../Admin/AdminHome/AdminLayout";
 import ProtectedAdminRoutes from "../Routes/ProtectedAdminRoutes";
+import DashboardPage from "../Admin/Dashboard/DashboardPage";
+import UsersPage from "../Admin/Users/UsersPage";
+import OrderPage from "../Admin/Orders/OrderPage";
+import ProductsPage from "../Admin/Products/ProductsPage";
+import AdminPage from "../Admin/AdminPage/AdminPage";
+import SelectedProduct from "../Admin/Products/SelectedProduct";
+import SelectedOrder from "../Admin/Orders/SelectedOrder";
+
+import AdminSelectedUser from "../Admin/Users/AdminSelectedUser";
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/AdminLogin" element={<AdminLoginPage />} />
-      <Route path="/Admin/" element={<ProtectedAdminRoutes />} />
+      <Route
+        path="/Admin"
+        element={
+          <AdminContextProvider>
+            <ProtectedAdminRoutes />
+          </AdminContextProvider>
+        }
+      >
+        <Route element={<AdminLayout />}>
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="users" element={<UsersPage />} />
+          <Route path="orders" element={<OrderPage />} />
+          <Route path="Products" element={<ProductsPage />} />
+          <Route
+            path="Products/selectedProduct"
+            element={<SelectedProduct />}
+          />
+          <Route path="Orders/selectedOrder" element={<SelectedOrder />} />
+          <Route path="Users/selectedUser" element={<AdminSelectedUser />} />
+          <Route path="AdminPage" element={<AdminPage />} />
+        </Route>
+      </Route>
 
-      <Route path="/AdminLogin" element={<AdminLoginPage />} />
       {/* Public only routes */}
       <Route element={<PublicRoutes />}>
         <Route index element={<UserLogin />} />

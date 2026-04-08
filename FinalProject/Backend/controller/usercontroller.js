@@ -5,23 +5,15 @@ import mongoose from "mongoose";
 //! GET /api/users
 export const getAllUsers = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
+    const users = await userModel
+      .find()
+      .select("-password")
+      .sort({ createdAt: -1 });
 
-    const [users, total] = await Promise.all([
-      userModel
-        .find()
-        .select("-password")
-        .skip(skip)
-        .limit(limit)
-        .sort({ createdAt: -1 }),
-      userModel.countDocuments(),
-    ]);
-
-    res
-      .status(200)
-      .json({ users, total, page, pages: Math.ceil(total / limit) });
+    res.status(200).json({
+      users,
+      total: users.length,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
