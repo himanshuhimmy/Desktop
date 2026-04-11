@@ -29,7 +29,7 @@ export const AdminContextProvider = ({ children }) => {
   const [filteredUsers, setFilteredUsers] = useState(
     JSON.parse(localStorage.getItem("filteredUsers") || null),
   );
-
+  let [refresh, setRefresh] = useState(0);
   const [allOrders, setAllorders] = useState(
     JSON.parse(localStorage.getItem("allOrders")) || null,
   );
@@ -44,6 +44,12 @@ export const AdminContextProvider = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState(
     JSON.parse(localStorage.getItem("selectedUser")) || null,
   );
+
+  let [allProducts, setAllProducts] = useState(null);
+  const [stats, setStats] = useState(
+    JSON.parse(localStorage.getItem("stats")) || null,
+  );
+
   useEffect(() => {
     localStorage.setItem("adminLoggedIn", JSON.stringify(adminLoggedIn));
     localStorage.setItem("adminData", JSON.stringify(adminData));
@@ -54,7 +60,12 @@ export const AdminContextProvider = ({ children }) => {
     localStorage.setItem("allUsers", JSON.stringify(allUsers));
     localStorage.setItem("filteredUsers", JSON.stringify(filteredUsers));
     localStorage.setItem("selectedUser", JSON.stringify(selectedUser));
+    localStorage.setItem("stats", JSON.stringify(stats));
   }, [adminLoggedIn]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedOrder", JSON.stringify(selectedOrder));
+  }, [selectedOrder]);
 
   useEffect(() => {
     localStorage.setItem("allOrders", JSON.stringify(allOrders));
@@ -86,7 +97,33 @@ export const AdminContextProvider = ({ children }) => {
       }
     };
     AllUSers();
+
+    let Product = async () => {
+      let result = await axios.get("http://localhost:5000/api/products");
+      setAllProducts(result.data);
+    };
+    Product();
+
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/admin/dashboard",
+        );
+        setStats(response.data);
+      } catch (err) {
+        console.error("Failed to load dashboard stats", err);
+      }
+    };
+    fetchStats();
   }, []);
+
+  useEffect(() => {
+    let Product = async () => {
+      let result = await axios.get("http://localhost:5000/api/products");
+      setAllProducts(result.data);
+    };
+    Product();
+  }, [refresh]);
 
   let value = {
     adminLoggedIn,
@@ -111,6 +148,12 @@ export const AdminContextProvider = ({ children }) => {
     setAllUsers,
     selectedUser,
     setSelectedUser,
+    refresh,
+    setRefresh,
+    allProducts,
+    setAllProducts,
+    stats,
+    setStats,
   };
 
   return (

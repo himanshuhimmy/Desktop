@@ -36,11 +36,15 @@ export const ContextProvider = ({ children }) => {
   let [selectedGender, setSelectedGender] = useState("male");
 
   let [cart, setCart] = useState(
-    JSON.parse(localStorage.getItem("cart")) || null,
+    JSON.parse(localStorage.getItem("cart")) || [],
   );
 
   let [wishList, setWishList] = useState(
     JSON.parse(localStorage.getItem("wishList")) || null,
+  );
+
+  let [orders, setOrders] = useState(
+    JSON.parse(localStorage.getItem("orders")) || null,
   );
 
   useEffect(() => {
@@ -96,6 +100,7 @@ export const ContextProvider = ({ children }) => {
     localStorage.setItem("userAddress", JSON.stringify(userAddress));
     localStorage.setItem("cart", JSON.stringify(cart));
     localStorage.setItem("wishList", JSON.stringify(wishList));
+    localStorage.setItem("orders", JSON.stringify(orders));
   }, [userData, userAddress, cart, wishList]);
 
   useEffect(() => {
@@ -103,7 +108,6 @@ export const ContextProvider = ({ children }) => {
 
     let result = async () => {
       try {
-        console.log(userData.id);
         let data = await axios.get(
           `http://localhost:5000/api/wishlist?userId=${userData.id}`,
         );
@@ -125,8 +129,17 @@ export const ContextProvider = ({ children }) => {
     let Product = async () => {
       let result = await axios.get("http://localhost:5000/api/products");
       setAllProducts(result.data);
+      console.log("allproducts fetched");
     };
     Product();
+
+    let UserOrders = async () => {
+      let result = await axios.get(
+        `http://localhost:5000/api/orders?userId=${userData.id}`,
+      );
+      setOrders(result.data);
+    };
+    UserOrders();
   }, [userData?.id, refresh]);
 
   useEffect(() => {
@@ -139,14 +152,17 @@ export const ContextProvider = ({ children }) => {
       setUserAddress(result.data);
     };
     data();
-  }, [userData?.id]);
+  }, [userData]);
 
   useEffect(() => {
-    localStorage.setItem("userData", JSON.stringify(userData));
-    localStorage.setItem("userAddress", JSON.stringify(userAddress));
-    localStorage.setItem("cart", JSON.stringify(cart));
-    localStorage.setItem("wishList", JSON.stringify(wishList));
-  }, [userData]);
+    let cartFetch = async () => {
+      let FetchedUserCart = await axios.get(
+        `http://localhost:5000/api/cart?userId=${userData.id}`,
+      );
+      setCart(FetchedUserCart.data);
+    };
+    cartFetch();
+  }, [refresh]);
 
   const value = {
     inputText,
@@ -184,6 +200,8 @@ export const ContextProvider = ({ children }) => {
     setWishList,
     refresh,
     setRefresh,
+    orders,
+    setOrders,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

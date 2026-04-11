@@ -26,6 +26,7 @@ export const getAllOrders = async (req, res) => {
 
 //! GET /api/orders/:id
 export const getOrderById = async (req, res) => {
+  console.log(req.params);
   try {
     const order = await orderModel
       .findById(req.params.id)

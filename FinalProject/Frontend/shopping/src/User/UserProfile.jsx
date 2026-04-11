@@ -1,267 +1,195 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import AppContext from "../ContextStore/AppContext";
-
 import order from "../assets/Svgs/User/order.svg";
-import edit from "../assets/Svgs/User/edit.svg";
 import profile from "../assets/Svgs/User/user.svg";
-import axios from "axios";
+import AddressForm from "./AddressFrom/AddressForm";
+import { LogOut, Package, ShieldCheck, Calendar } from "lucide-react";
 
 const UserProfile = () => {
-  let {
+  const {
     setLoggedIn,
     userData,
     userAddress,
     setUserAddress,
-    inputText,
-    setInputText,
     setSelectedProductId,
     setSelectedProduct,
   } = useContext(AppContext);
 
-  function handleLoggOut() {
+  const handleLoggOut = () => {
     setLoggedIn(false);
     setUserAddress(null);
     setSelectedProductId(null);
     setSelectedProduct(null);
-  }
-  let inputClass =
-    "border border-gray-200 p-1 mx-3 focus:text-blue-500 rounded-xl w-full";
-
-  const tierColors = {
-    Hero: "text-yellow-400",
-    Fan: "text-gray-300",
-    Free: "text-orange-500",
-    Legend: "text-[#3e62e0]",
   };
 
-  const bgColours = {
-    Hero: "bg-white",
-    Fan: "bg-[#fcfffe]",
-    Free: "bg-white",
-    Legend:
-      "bg-gradient-to-br from-[#0a1a3a] to-[#0f2a63] rounded-2xl p-8 text-white",
+  const tierStyles = {
+    Hero: {
+      text: "text-yellow-500",
+      border: "border-yellow-200",
+      bg: "bg-white",
+    },
+    Fan: { text: "text-gray-400", border: "border-gray-200", bg: "bg-gray-50" },
+    Free: {
+      text: "text-orange-500",
+      border: "border-orange-100",
+      bg: "bg-white",
+    },
+    Legend: {
+      text: "text-blue-400",
+      border: "border-blue-900/20",
+      bg: "bg-gradient-to-br from-[#0a1a3a] to-[#0f2a63] text-white",
+    },
   };
 
-  const borderColour = {
-    Hero: "border border-yellow-400",
-    Fan: "border border-gray-300",
-    Free: "border border-gray-300",
-    Legend: "border border-blue-500",
-  };
+  const currentTier = userAddress?.user?.planId?.name || "Free";
+  const styles = tierStyles[currentTier];
 
-  function handleOnchange(value, field) {
-    setInputText((prev) => ({ ...prev, [field]: value }));
-  }
   return (
-    <div className="my-7">
-      <div className="w-[80%] m-auto ">
-        <div className="p-6 rounded-2xl shadow-xl border border-gray-400 flex justify-between">
-          <div className="flex">
-            <img
-              className="h-15 rounded-b-full shadow-2xs border border-gray-100"
-              src={profile}
-              alt="user"
-            />
+    <div className="bg-gray-50 min-h-screen py-10">
+      <div className="max-w-7xl mx-auto px-6 space-y-8">
+        {/* Header Profile Card */}
+        <div className="bg-white rounded-[32px] p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <img
+                className="h-20 w-20 rounded-2xl object-cover border-4 border-gray-50 shadow-sm"
+                src={profile}
+                alt="user"
+              />
+              <div className="absolute -bottom-2 -right-2 bg-green-500 h-5 w-5 rounded-full border-4 border-white"></div>
+            </div>
             <div>
-              <h1 className="flex justify-center items-center mx-4 font-bold text-2xl text-blue-400">
+              <h1 className="text-3xl font-black text-gray-900 leading-none mb-2">
                 {userData.name}
               </h1>
-              <h1 className="mt-4">
-                <label
-                  className=" text-blue-400 mx-4
-                "
-                >
-                  Joined us
-                </label>
-                {userAddress !== null &&
-                  new Date(userAddress.user.createdAt).toLocaleString("en-IN", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-              </h1>
+              <div className="flex items-center gap-2 text-gray-400">
+                <Calendar size={16} />
+                <span className="text-sm font-medium">
+                  Member since{" "}
+                  {userAddress &&
+                    new Date(userAddress.user.createdAt).toLocaleDateString(
+                      "en-IN",
+                      { month: "long", year: "numeric" },
+                    )}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center">
-            <button>save changes</button>
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-2xl font-bold transition-all hover:shadow-lg hover:shadow-blue-200 active:scale-95">
+            Save Profile
+          </button>
+        </div>
+
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left: Address Section (7 Cols) */}
+          <div className="lg:col-span-7 bg-white rounded-[32px] p-8 shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                <Package size={20} />
+              </div>
+              <h2 className="text-xl font-bold text-gray-800">
+                Shipping Addresses
+              </h2>
+            </div>
+            <AddressForm />
           </div>
-        </div>
-      </div>
-      <div className="flex flex-wrap w-[90%] m-auto mt-6 justify-around">
-        <div
-          className={`w-[40%] rounded-2xl shadow-2xl border border-gray-300 p-6`}
-        >
-          <h1 className="text-2xl underline font-bold mb-3 text-center text-blue-400">
-            Address
-          </h1>
-          {userAddress !== null &&
-            userAddress.user.addresses.map((address) => {
-              return (
-                <div
-                  key={address.label}
-                  className="flex justify-around items-center "
-                >
-                  <div className="flex flex-col gap-2">
-                    <div>
-                      <input
-                        onChange={(e) =>
-                          handleOnchange(e.target.value, "label")
-                        }
-                        className={inputClass}
-                        value={address.label}
-                        type="text"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        onChange={(e) =>
-                          handleOnchange(e.target.value, "line1")
-                        }
-                        className={inputClass}
-                        value={address.line1}
-                        type="text"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        onChange={(e) =>
-                          handleOnchange(e.target.value, "pincode")
-                        }
-                        className={inputClass}
-                        value={address.pincode}
-                        type="number"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <input
-                      onChange={(e) => handleOnchange(e.target.value, "city")}
-                      className={inputClass}
-                      value={address.city}
-                      type="text"
-                    />
-                    <input
-                      onChange={(e) => handleOnchange(e.target.value, "state")}
-                      className={inputClass}
-                      value={address.state}
-                      type="text"
-                    />
-                  </div>
+
+          <div
+            className={`lg:col-span-5 rounded-4xl p-1 shadow-2xl ${styles.border} overflow-hidden`}
+          >
+            <div className={`${styles.bg} h-full p-8 flex flex-col`}>
+              <div className="flex justify-between items-start mb-10">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] opacity-60 mb-1">
+                    Current Tier
+                  </p>
+                  <h2
+                    className={`text-4xl font-black italic tracking-tighter ${styles.text}`}
+                  >
+                    {currentTier}
+                  </h2>
                 </div>
-              );
-            })}
-        </div>
-        <div
-          className={`w-[40%] rounded-2xl ${borderColour[userAddress?.user?.planId?.name]} ${bgColours[userAddress?.user?.planId?.name]} shadow-2xl border p-6`}
-        >
-          <h1 className="text-2xl underline font-bold mb-3 text-center text-blue-400">
-            Membership
-          </h1>
+                <ShieldCheck size={40} className={styles.text} />
+              </div>
 
-          <div className="p-4">
-            {userAddress !== null && (
-              <div
-                className={`
-      max-w-2xl mx-auto overflow-hidden rounded-2xl shadow-lg transition-all 
-      ${bgColours[userAddress.user.planId.name]} 
-      ${borderColour[userAddress.user.planId.name]}
-    `}
-              >
-                <div className="flex flex-col md:flex-row">
-                  <div className="flex-1 p-8 border-b md:border-b-0 md:border-r border-white/10">
-                    <h1
-                      className={`text-2xl font-black uppercase tracking-tight mb-6 ${tierColors[userAddress.user.planId.name]}`}
-                    >
-                      {userAddress.user.planId.name}
-                    </h1>
-
-                    <div className="space-y-4 opacity-90">
-                      <div>
-                        <p className="text-xs uppercase tracking-widest opacity-60 mb-1">
-                          Benefit
-                        </p>
-                        <p className="text-xl font-semibold">
-                          {userAddress.user.planId.discountPercent}% Discount
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-xs uppercase tracking-widest opacity-60 mb-1">
-                          Member Since
-                        </p>
-                        <p className="font-medium">
-                          {userAddress?.user?.planId?.createdAt &&
-                            new Date(
-                              userAddress.user.planId.createdAt,
-                            ).toLocaleDateString("en-IN", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
-                        </p>
-                      </div>
-
-                      <div>
-                        <p className="text-xs uppercase tracking-widest opacity-60 mb-1">
-                          Validity
-                        </p>
-                        <p className="font-medium">
-                          {userAddress.user.planId.durationDays} Days
-                        </p>
-                      </div>
+              {userAddress && (
+                <div className="space-y-8 grow">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-black/5 p-4 rounded-2xl backdrop-blur-md">
+                      <p className="text-[10px] uppercase font-bold opacity-50 mb-1">
+                        Benefit
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {userAddress.user.planId.discountPercent}% OFF
+                      </p>
+                    </div>
+                    <div className="bg-black/5 p-4 rounded-2xl backdrop-blur-md">
+                      <p className="text-[10px] uppercase font-bold opacity-50 mb-1">
+                        Period
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {userAddress.user.planId.durationDays} Days
+                      </p>
                     </div>
                   </div>
 
-                  <div className="flex-1 p-8 bg-black/5 backdrop-blur-sm">
-                    <h2 className="text-sm font-bold uppercase tracking-widest mb-4 opacity-70">
+                  <div>
+                    <h3 className="text-sm font-bold uppercase tracking-widest mb-4 opacity-70">
                       Exclusive Perks
-                    </h2>
-                    <ul className="space-y-3">
-                      {userAddress.user.planId.perks.map((perk, index) => (
-                        <li key={index} className="flex items-center gap-3">
-                          <span
-                            className={`h-1.5 w-1.5 rounded-full ${tierColors[userAddress.user.planId.name].replace("text-", "bg-") || "bg-current"}`}
+                    </h3>
+                    <ul className="grid grid-cols-1 gap-3">
+                      {userAddress.user.planId.perks.map((perk, i) => (
+                        <li
+                          key={i}
+                          className="flex items-center gap-3 text-sm font-medium"
+                        >
+                          <div
+                            className={`h-1.5 w-1.5 rounded-full ${currentTier === "Legend" ? "bg-blue-400" : "bg-gray-400"}`}
                           />
-                          <span className="text-sm font-medium">{perk}</span>
+                          {perk}
                         </li>
                       ))}
                     </ul>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-          {userAddress !== null && console.log(userAddress.user)}
-        </div>
-      </div>
+              )}
 
-      <div className="w-[80%] m-auto">
-        <div className="my-5 p-4 rounded-xl shadow-xl border border-gray-200 flex justify-around items-center">
-          <div className="flex items-center">
-            <img className="h-6 m-3" src={order} alt="" /> orders
-          </div>
-          <div>
-            <p>
-              MemberShip Expires at
-              <label className="text-blue-400 font-bold" htmlFor="">
-                {userAddress?.user?.planExpiresAt &&
-                  new Date(
-                    userAddress.user.planId.createdAt,
-                  ).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-              </label>
-            </p>
-            <div className="flex justify-center mt-4">
-              <button>Upgrade / Reniew</button>
+              <button className="mt-10 w-full py-4 rounded-2xl font-black uppercase tracking-widest bg-white/10 hover:bg-white/20 border border-white/20 transition-all">
+                Upgrade Plan
+              </button>
             </div>
           </div>
+        </div>
+
+        {/* Footer Quick Actions */}
+        <div className="bg-white rounded-[32px] p-4 shadow-sm border border-gray-100 flex flex-wrap justify-around items-center gap-4">
+          <div className="flex items-center gap-3 px-6 py-2 hover:bg-gray-50 rounded-xl cursor-pointer transition-colors">
+            <Package className="text-blue-500" />
+            <span className="font-bold text-gray-700 uppercase tracking-tighter">
+              Order History
+            </span>
+          </div>
+
+          <div className="h-8 w-px bg-gray-100 hidden md:block" />
+
+          <div className="text-sm text-gray-500">
+            Expires on{" "}
+            <span className="text-blue-600 font-bold">
+              {userAddress?.user?.planExpiresAt &&
+                new Date(userAddress.user.planExpiresAt).toLocaleDateString(
+                  "en-IN",
+                )}
+            </span>
+          </div>
+
+          <div className="h-8 w-px bg-gray-100 hidden md:block" />
+
           <button
-            className="bg-amber-500 px-3 py-2 rounded-2xl hover:bg-amber-700 transition-all duration-300 text-white "
             onClick={handleLoggOut}
+            className="flex items-center gap-2 px-8 py-3 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-all active:scale-95"
           >
-            logout
+            <LogOut size={18} /> Logout
           </button>
         </div>
       </div>

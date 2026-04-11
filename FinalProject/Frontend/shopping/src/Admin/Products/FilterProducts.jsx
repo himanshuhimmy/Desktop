@@ -3,9 +3,9 @@ import AppContext from "../../ContextStore/AppContext";
 import { AdminContext } from "../../ContextStore/AdminContext";
 
 const FilterProducts = () => {
-  const { setFilteredProducts } = useContext(AdminContext);
-  const { allCategorys, allThemes, allProducts, refresh } =
-    useContext(AppContext);
+  const { setFilteredProducts, allProducts, refresh } =
+    useContext(AdminContext);
+  const { allCategorys, allThemes } = useContext(AppContext);
 
   const [filterState, setFilterState] = useState({
     theme: "All",
@@ -48,7 +48,7 @@ const FilterProducts = () => {
         ? a.price - b.price
         : b.price - a.price;
     });
-
+    console.log("filterd the data");
     setFilteredProducts(data);
   }, [filterState, allProducts, setFilteredProducts, refresh]);
 

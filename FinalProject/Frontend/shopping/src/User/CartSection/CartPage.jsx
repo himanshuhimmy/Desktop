@@ -1,17 +1,25 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import AppContext from "../../ContextStore/AppContext";
 import EmptyCart from "./EmptyCart";
 import CartDetails from "./CartDetails";
 
 const CartPage = () => {
-  let { cart, setCart } = useContext(AppContext);
+  const { cart } = useContext(AppContext);
+
+  const isCartEmpty = !cart || !cart.cart || cart.cart.items.length === 0;
 
   return (
-    <div>
-      <div className="w-[90%] m-auto h-screen">
-        {cart === null ? <EmptyCart /> : <CartDetails />}
-        <div></div>
+    <div className="min-h-screen bg-white">
+      <div className="w-[95%] max-w-7xl m-auto py-10">
+        {isCartEmpty ? (
+          <div className="animate-in fade-in zoom-in duration-500">
+            <EmptyCart />
+          </div>
+        ) : (
+          <div className="animate-in slide-in-from-bottom-4 duration-700">
+            <CartDetails />
+          </div>
+        )}
       </div>
     </div>
   );

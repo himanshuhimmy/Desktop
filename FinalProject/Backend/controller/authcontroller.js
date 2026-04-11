@@ -4,8 +4,8 @@ import userModel from "../models/userSchema.js";
 //! POST /api/auth/register
 export const register = async (req, resp) => {
   try {
-    const { name, email, password } = req.body;
-
+    const { name, email, password, planId, isActive } = req.body;
+    console.log(req.body);
     const existing = await userModel.findOne({ email });
     if (existing)
       return resp.status(400).json({ message: "Email already registered" });
@@ -14,11 +14,18 @@ export const register = async (req, resp) => {
       name,
       email,
       password: hashedPassword,
+      planId,
+      isActive,
     });
 
     resp.status(201).json({
       message: "Registered successfully",
-      user: { id: user._id, name: user.name, email: user.email },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        planId: user.planId,
+      },
     });
   } catch (err) {
     resp.status(500).json({ message: err.message });

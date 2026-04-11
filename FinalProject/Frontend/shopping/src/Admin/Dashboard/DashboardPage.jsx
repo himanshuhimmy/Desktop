@@ -1,18 +1,10 @@
 import React from "react";
-import { LineChart } from "@mui/x-charts/LineChart";
+import RecentOrders from "./RecentOrders";
 
 const DashboardPage = () => {
   return (
     <div>
-      <LineChart
-        xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
-        series={[
-          {
-            data: [2, 5.5, 2, 8.5, 1.5, 5],
-          },
-        ]}
-        height={300}
-      />
+      <RecentOrders />
     </div>
   );
 };

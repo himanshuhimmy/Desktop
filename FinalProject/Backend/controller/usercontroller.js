@@ -37,7 +37,7 @@ export const getUserById = async (req, resp) => {
 // ! PATCH (update)    /api/users/:id
 export const updateUser = async (req, resp) => {
   try {
-    const allowed = ["name", "phone"];
+    const allowed = ["name", "phone", "addresses"];
     const updates = {};
     allowed.forEach((field) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
@@ -87,8 +87,22 @@ export const changePassword = async (req, res) => {
 //!  DELETE /api/users/:id
 export const deleteUser = async (req, res) => {
   try {
-    await userModel.findByIdAndUpdate(req.params.id, { isActive: false });
-    res.status(200).json({ message: "User deactivated" });
+    const user = await userModel.findByIdAndUpdate(
+      req.params.id,
+      { isActive: false },
+      { new: true },
+    );
+    res.status(200).json({ message: "User deactivated", user });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+//!  Activate /api/users/Activate/:id
+export const ActivateUser = async (req, res) => {
+  try {
+    await userModel.findByIdAndUpdate(req.params.id, { isActive: true });
+    res.status(200).json({ message: "User Activated" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

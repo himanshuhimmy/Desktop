@@ -3,28 +3,11 @@ import { AdminContext } from "../../ContextStore/AdminContext";
 import axios from "axios";
 
 const AdminPage = () => {
-  const { setAdminLoggedIn, setAdminData } = useContext(AdminContext);
-  const [stats, setStats] = useState(null);
+  const { setAdminLoggedIn, setAdminData, stats } = useContext(AdminContext);
 
-  // Fetch Dashboard Stats on Load
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/admin/dashboard",
-        );
-        setStats(response.data);
-      } catch (err) {
-        console.error("Failed to load dashboard stats", err);
-      }
-    };
-    fetchStats();
-  }, []);
-  console.log(stats);
   const HandleLogout = () => {
     setAdminData(null);
     setAdminLoggedIn(false);
-    localStorage.removeItem("adminToken"); // Clear token if you're using it
   };
 
   if (!stats)

@@ -7,25 +7,56 @@ import loginImage from "./../assets/Register&loginPages/userLogin.png";
 import { Navigate, useNavigate } from "react-router-dom";
 
 const UserLogin = () => {
-  let { inputText, setLoggedIn, setInputText, setUserData, loggedIn } =
+  let { inputText, setLoggedIn, setInputText, setUserData, setUserAddress } =
     useContext(AppContext);
+
+  const [error, setError] = useState("");
   function onChangeHandle(value, field) {
     setInputText((prev) => ({ ...prev, [field]: value }));
   }
 
   let navigate = useNavigate();
   async function handleLogin() {
+    setError("");
+    if (!inputText?.email || !inputText?.password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
     try {
       const resp = await axios.post("http://localhost:5000/api/auth/login", {
         email: inputText.email,
         password: inputText.password,
       });
 
-      setUserData(resp.data.user);
+      const loggedInUser = resp.data.user;
+      setUserData(loggedInUser);
+
+      const result = await axios.get(
+        `http://localhost:5000/api/users/${loggedInUser.id}`,
+      );
+      setUserAddress(result.data);
+
       setInputText(null);
       setLoggedIn(true);
-    } catch (error) {
-      console.error(error);
+      navigate("/Home");
+    } catch (err) {
+      if (err.response) {
+        const status = err.response.status;
+        if (status === 403) {
+          setError(
+            "Your account has been deactivated. Please contact support.",
+          );
+        } else if (status === 401 || status === 404) {
+          setError("Invalid email or password.");
+        } else {
+          setError(
+            err.response.data.message || "An unexpected error occurred.",
+          );
+        }
+      } else {
+        setError("Server is down. Please try again later.");
+      }
     }
   }
 
@@ -67,10 +98,22 @@ const UserLogin = () => {
             <Button onClick={handleLogin}>Login</Button>
             <Button>BACK</Button>
           </div>
+          {error && (
+            <div className="">
+              <p className="text-red-700 text-sm font-bold text-center">
+                {error}
+              </p>
+            </div>
+          )}
 
           <p className="my-4 text-center py-4">
             Don't have an account?{" "}
-            <button onClick={HandleCreateAccount}>Create an account</button>
+            <button
+              className="hover:text-blue-500 hover:font-bold transition-all duration-300"
+              onClick={HandleCreateAccount}
+            >
+              Create an account
+            </button>
           </p>
         </div>
       </div>

@@ -107,7 +107,7 @@ export const getDashboard = async (req, res) => {
         orderModel
           .find()
           .sort({ placedAt: -1 })
-          .limit(5)
+          .limit(10)
           .populate("userId", "name email"),
       ]);
 

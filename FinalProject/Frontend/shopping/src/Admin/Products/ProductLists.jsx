@@ -16,7 +16,7 @@ const ProductLists = () => {
       <div className="text-center p-10 text-gray-500">Loading products...</div>
     );
   }
-
+  console.log(filteredProducts);
   return (
     <div className="w-[95%] m-auto bg-white rounded-2xl shadow-lg overflow-hidden mb-10">
       <table className="w-full text-left border-collapse">

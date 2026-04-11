@@ -11,16 +11,21 @@ const AdminSelectedUser = () => {
 
   const toggleStatus = async () => {
     try {
-      // Assuming your delete route actually toggles or deactivates
-      const response = await axios.delete(
-        `http://localhost:5000/api/users/${selectedUser._id}`,
-      );
+      if (selectedUser.isActive) {
+        await axios.delete(
+          `http://localhost:5000/api/users/${selectedUser._id}`,
+        );
+      } else {
+        await axios.patch(
+          `http://localhost:5000/api/users/Activate/${selectedUser._id}`,
+        );
+      }
 
-      // Update local state so UI changes immediately
+      // Update local state immediately
       const updatedUser = { ...selectedUser, isActive: !selectedUser.isActive };
       setSelectedUser(updatedUser);
 
-      // Update the main list in context so the table is fresh when you go back
+      // Update the main list
       const updatedList = allUsers.users.map((u) =>
         u._id === updatedUser._id ? updatedUser : u,
       );

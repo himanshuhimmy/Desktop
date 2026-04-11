@@ -1,173 +1,172 @@
-import React, { useState } from "react";
-import { useContext } from "react";
+import React, { useState, useMemo, useContext } from "react"; // Added useMemo
 import AppContext from "../../ContextStore/AppContext";
 import star from "../../assets/Svgs/star-blue.svg";
 import EmptyThemeList from "./EmptyThemeList";
 import axios from "axios";
 
 const WishListDetails = () => {
-  let { wishList, setWishList, userData, allThemes, activeTheme, setRefresh } =
+  const { wishList, userData, allThemes, activeTheme, setRefresh } =
     useContext(AppContext);
 
-  let [selectedThemeModule, setSelectedThemeModule] = useState(activeTheme);
-  console.log(wishList.wishlist.items.map((item) => item));
+  const [selectedThemeModule, setSelectedThemeModule] = useState(
+    activeTheme || "all",
+  );
 
-  function handleSelectedThemeModule(id) {
-    if (id === "all") {
-      setSelectedThemeModule("all");
+  const filteredItems = useMemo(() => {
+    const items = wishList?.wishlist?.items || [];
 
-      return;
+    if (selectedThemeModule === "all") {
+      return items;
     }
-    setSelectedThemeModule(id);
-  }
 
-  async function handleAddToCart(product, varient, size) {
-    let cartData = {
+    return items.filter((item) => item.themeId === selectedThemeModule);
+  }, [wishList, selectedThemeModule]);
+  const handleSelectedThemeModule = (id) => {
+    setSelectedThemeModule(id);
+  };
+
+  const handleAddToCart = async (product, variant, size) => {
+    const cartData = {
       userId: userData.id,
       productId: product,
-      variantId: varient,
+      variantId: variant,
       size: size,
       quantity: 1,
     };
 
     try {
       await axios.post("http://localhost:5000/api/cart/items", cartData);
-      // setCart(cartData);
       setRefresh((prev) => prev + 1);
     } catch (err) {
-      console.log("CART ERROR:", err.message);
-      console.error("Failed to add to cart:", err);
+      console.error("CART ERROR:", err.message);
     }
-  }
+  };
 
-  async function HandleRemoveWishList(productId, variantId, size) {
+  const HandleRemoveWishList = async (productId, variantId, size) => {
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `http://localhost:5000/api/wishlist/${productId}/${variantId}/${size}`,
-        {
-          params: { userId: userData.id },
-        },
+        { params: { userId: userData.id } },
       );
+
       setRefresh((prev) => prev + 1);
     } catch (err) {
-      console.error(err.response?.data?.message);
+      console.error("REMOVE ERROR:", err.response?.data?.message);
     }
-  }
+  };
 
-  const filteredItems = wishList?.wishlist.items.filter(
-    (item) => item.themeId === selectedThemeModule,
-  );
+  console.log(wishList.wishlist.items);
+  console.log(selectedThemeModule);
   return (
-    <div className="p-3 ">
+    <div className="p-3 max-w-7xl mx-auto">
       <div className="my-5">
         <div className="flex p-4 items-center">
           <img className="h-10" src={star} alt="star" />
-          <h1 className="text-4xl font-bold mx-3  text-blue-400">
-            Curated for you
+          <h1 className="text-4xl font-black mx-3 text-blue-400 italic tracking-tighter">
+            CURATED FOR YOU
           </h1>
         </div>
-        <p className="text-xl font-light">
-          A curated collection of your most desired pieces. Items in your
-          wishlist are reserved only for{" "}
-          <label className="text-blue-400 font-bold">You</label>.
+        <p className="text-xl font-light text-gray-500 px-4">
+          Items in your wishlist are reserved only for{" "}
+          <span className="text-blue-400 font-bold">YOU</span>.
         </p>
       </div>
 
-      <div className="flex gap-7 text-2xl mt-4">
+      {/* Theme Selection Tabs */}
+      <div className="flex gap-7 text-lg mt-8 px-4 border-b border-gray-100 pb-2">
         <button
           onClick={() => handleSelectedThemeModule("all")}
-          className={`${selectedThemeModule === "all" ? " text-blue-400 underline font-bold" : ""}  `}
+          className={`pb-2 transition-all ${
+            selectedThemeModule === "all"
+              ? "text-blue-500 border-b-2 border-blue-500 font-bold"
+              : "text-gray-400 hover:text-gray-600"
+          }`}
         >
           All Collections
         </button>
-        {allThemes !== null &&
-          allThemes?.themes.map((theme) => {
-            return (
-              <div className="flex">
-                <button
-                  className={
-                    theme._id === selectedThemeModule &&
-                    selectedThemeModule !== "all"
-                      ? "text-blue-400 underline font-bold"
-                      : ""
-                  }
-                  onClick={() => handleSelectedThemeModule(theme._id)}
-                >
-                  {theme.name}
-                </button>
-              </div>
-            );
-          })}
+        {allThemes?.themes?.map((theme) => (
+          <button
+            key={theme._id}
+            className={`pb-2 transition-all ${
+              theme._id === selectedThemeModule
+                ? "text-blue-500 border-b-2 border-blue-500 font-bold"
+                : "text-gray-400 hover:text-gray-600"
+            }`}
+            onClick={() => handleSelectedThemeModule(theme._id)}
+          >
+            {theme.name}
+          </button>
+        ))}
       </div>
-      <hr className="  border border-blue-200 m-5" />
 
-      <div className="my-6">
-        <h1 className="text-3xl text-center font-semibold mb-2">Your List</h1>
-        <hr className="  border border-blue-700  w-[8%] m-auto mb-7" />
-
-        <div className="w-[90%] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="my-10">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
           {filteredItems.length > 0 ? (
             filteredItems.map((item) => {
-              const variant = item.productId.variants.find(
+              const variant = item.productId?.variants?.find(
                 (vr) => vr._id === item.variantId,
               );
 
               return (
                 <div
-                  key={item.variantId}
-                  className="rounded-2xl border border-gray-200 shadow-md hover:shadow-xl transition-all duration-300 p-4 bg-white"
+                  key={`${item.variantId}-${item.size}`} // FIX 3: Unique key per variant/size combo
+                  className="group rounded-4xl border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 p-5 bg-white"
                 >
-                  <div className="h-56 rounded-xl overflow-hidden mb-4">
+                  <div className="h-64 rounded-3xl overflow-hidden mb-6 bg-gray-50">
                     <img
-                      className="w-full h-full object-cover hover:scale-105 transition-all duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       src={variant?.images?.display}
-                      alt="product"
+                      alt={item.productId?.name}
                     />
                   </div>
 
-                  <h1 className="font-semibold text-lg mb-2">
-                    {item.productId.name}
-                  </h1>
+                  <div className="px-2">
+                    <h2 className="font-bold text-xl text-gray-800 mb-1">
+                      {item.productId?.name}
+                    </h2>
+                    <p className="text-gray-400 text-sm mb-4 uppercase tracking-widest font-medium">
+                      Size: {item.size}
+                    </p>
 
-                  <p className="font-medium mb-3">
-                    Rs/-{" "}
-                    <span className="text-blue-400 font-semibold">
-                      {item.productId.price}
-                    </span>
-                  </p>
+                    <div className="flex justify-between items-center mt-6">
+                      <p className="font-black text-2xl text-blue-500">
+                        ₹{item.productId?.price}
+                      </p>
 
-                  <div className="flex justify-around items-center">
-                    <button
-                      onClick={() =>
-                        handleAddToCart(
-                          item.productId._id,
-                          item.variantId,
-                          item.size,
-                        )
-                      }
-                      className="px-3 py-2 rounded-xl border border-blue-400 text-sm font-semibold hover:text-white hover:bg-blue-400 transition-all duration-300"
-                    >
-                      Add to Cart
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        HandleRemoveWishList(
-                          item.productId._id,
-                          item.variantId,
-                          item.size,
-                        )
-                      }
-                      className="text-red-500 text-sm font-semibold hover:scale-110 transition-all duration-300"
-                    >
-                      Remove
-                    </button>
+                      <div className="flex gap-4">
+                        <button
+                          onClick={() =>
+                            HandleRemoveWishList(
+                              item.productId._id,
+                              item.variantId,
+                              item.size,
+                            )
+                          }
+                          className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                          title="Remove from Wishlist"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleAddToCart(
+                              item.productId._id,
+                              item.variantId,
+                              item.size,
+                            )
+                          }
+                          className="bg-gray-900 text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-blue-600 transition-all shadow-lg shadow-gray-200 hover:shadow-blue-100"
+                        >
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
             })
           ) : (
-            <div className="col-span-full flex justify-center">
+            <div className="col-span-full py-20">
               <EmptyThemeList />
             </div>
           )}

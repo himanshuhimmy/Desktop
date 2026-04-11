@@ -1,251 +1,222 @@
 import React, { useContext, useEffect, useState } from "react";
 import AppContext from "../ContextStore/AppContext";
 import axios from "axios";
+import { Heart, ShoppingBag, CheckCircle } from "lucide-react"; // Optional: for cleaner icons
 
 const ProductDetails = () => {
-  let {
+  const {
     selectedProduct,
-    setSelectedProduct,
     selectedGender,
     setSelectedGender,
     userData,
-    cart,
     setCart,
-    wishList,
-    setWishList,
-    refresh,
     setRefresh,
   } = useContext(AppContext);
-  console.log(selectedProduct);
 
-  function handleActiveGender(value) {
-    setSelectedGender(value);
-  }
+  const [activeColor, setActiveColor] = useState("");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [activeImg, setActiveImg] = useState("");
+
+  useEffect(() => {
+    if (selectedProduct?.product?.variants) {
+      const filtered = selectedProduct.product.variants.find(
+        (v) => v.gender === selectedGender,
+      );
+
+      if (filtered) {
+        setActiveColor(filtered.color);
+        setActiveImg(filtered.images.display);
+
+        const firstInStock = filtered.sizes.find((s) => s.stock > 0);
+        setSelectedSize(firstInStock ? firstInStock.size : "");
+      }
+    }
+  }, [selectedProduct, selectedGender]);
+
   const uniqueGenders = [
     ...new Set(selectedProduct?.product?.variants.map((v) => v.gender)),
   ];
 
-  // ! add to cart not working
+  const currentVariant = selectedProduct?.product?.variants.find(
+    (v) => v.gender === selectedGender && v.color === activeColor,
+  );
 
-  let [activeImg, setActiveImg] = useState(null);
-  let [activeColor, setActiveColor] = useState(null);
-  let [selectedSize, setSelectedSize] = useState(null);
-  let [selectedVarientId, setSelectedvarientId] = useState(null);
-  if (activeImg === null) {
-    setActiveImg(
-      selectedProduct?.product?.variants.map((vl) =>
-        vl.gender === selectedGender ? vl.images.display : "",
-      ),
-    );
-  }
-  if (activeColor === null) {
-    let color = selectedProduct?.product?.variants.map((vl) =>
-      vl.gender === selectedGender ? vl.color : "",
-    );
-
-    if (color) {
-      setActiveColor(color[0]);
-    }
-  }
-  if (selectedSize === null) {
-    let size = selectedProduct?.product?.variants.flatMap((vl) =>
-      vl.gender === selectedGender
-        ? vl?.sizes.map((sz) => (sz.stock != 0 ? sz.size : ""))
-        : "",
-    );
-    setSelectedSize(size[0]);
-  }
-
-  function handleSelectedcolor(color, id) {
-    setSelectedvarientId(id);
-    setActiveColor(color);
-  }
-  function handleActiveImg(img) {
-    setActiveImg(img);
-  }
-
-  function handleSelectedSize(sz) {
-    setSelectedSize(sz);
-  }
-
-  async function handleAddToCart() {
-    let cartData = {
-      userId: userData.id,
+  const handleAddToCart = async () => {
+    const cartData = {
+      userId: userData?.id,
       productId: selectedProduct.product._id,
-      variantId: selectedVarientId,
+      variantId: currentVariant?._id,
       size: selectedSize,
       quantity: 1,
     };
-    console.log(cartData);
 
     try {
       await axios.post("http://localhost:5000/api/cart/items", cartData);
-      setCart(cartData);
-    } catch (err) {
-      console.log("CART ERROR:", err.message);
-      console.error("Failed to add to cart:", err);
-    }
-  }
-  // console.log(selectedProduct.product.themeId._id);
 
-  async function addToWishlist() {
-    let wishlistData = {
-      userId: userData.id,
-      productId: selectedProduct.product._id,
-      variantId: selectedVarientId,
-      size: selectedSize,
-      themeId: selectedProduct.product.themeId._id,
-    };
-    // console.error(wishlistData);
-    try {
-      await axios.post("http://localhost:5000/api/wishlist", wishlistData);
-      alert("Added to wishlist!");
       setRefresh((prev) => prev + 1);
     } catch (err) {
-      if (err.response?.data?.message === "Already in wishlist") {
-        alert("Already in your wishlist!");
-      } else {
-        console.error(err);
-      }
+      console.error("Cart Error:", err.message);
     }
-  }
-  return (
-    <div>
-      <div className="flex w-[80%] m-auto my-6 p-4 justify-between">
-        <div className="w-[45%]">
-          <div>
-            <div className="w-[90%] m-auto rounded-2xl h-[30%] overflow-hidden mb-4">
-              <img
-                className="w-full h-full object-cover"
-                src={activeImg}
-                alt="images"
-              />
-            </div>
-            {console.log(
-              selectedProduct?.product?.variants.map((vl) =>
-                vl.gender === selectedGender ? vl.images.display : "",
-              ),
-            )}
-            <div className="flex h-[5%] justify-around">
-              <img
-                onClick={() => handleActiveImg(pose)}
-                className="object-contain h-fit w-[20%] rounded-2xl"
-                src={selectedProduct?.product?.variants.map((vl) =>
-                  vl.gender === selectedGender && vl.color === activeColor
-                    ? vl.images.display
-                    : "",
-                )}
-                alt="images"
-              />
+  };
+  console.log(selectedProduct.product.themeId._id);
+  const handleWishList = async () => {
+    let wishListData = {
+      userId: userData?.id,
+      productId: selectedProduct.product._id,
+      variantId: currentVariant?._id,
+      themeId: selectedProduct.product.themeId._id,
+      size: selectedSize,
+    };
 
-              {selectedProduct?.product?.variants.map((vl) =>
-                vl.images?.poses.map((pose) => (
-                  <img
-                    onClick={() => handleActiveImg(pose)}
-                    className="object-contain h-fit w-[20%] rounded-2xl"
-                    src={pose}
-                    alt="images"
-                  />
-                )),
-              )}
-            </div>
+    try {
+      await axios.post("http://localhost:5000/api/wishlist", wishListData);
+      setRefresh((prev) => prev + 1);
+    } catch (error) {
+      console.error("Wish Error:", err.message);
+    }
+  };
+
+  return (
+    <div className="bg-gray-50 min-h-screen py-12">
+      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden flex flex-col md:flex-row">
+        {/* Left: Image Gallery */}
+        <div className="md:w-1/2 p-8 bg-gray-50/50">
+          <div className="aspect-[4/5] rounded-2xl overflow-hidden mb-6 shadow-inner bg-white">
+            <img
+              src={activeImg}
+              className="w-full h-full object-cover transition-opacity duration-300"
+              alt="Main Product"
+            />
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            <button
+              onClick={() => setActiveImg(currentVariant?.images?.display)}
+              className={`w-20 h-24 rounded-lg overflow-hidden border-2 transition-all ${activeImg === currentVariant?.images?.display ? "border-blue-500 scale-105" : "border-transparent"}`}
+            >
+              <img
+                src={currentVariant?.images?.display}
+                className="w-full h-full object-cover"
+              />
+            </button>
+            {currentVariant?.images?.poses.map((pose, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveImg(pose)}
+                className={`w-20 h-24 rounded-lg overflow-hidden border-2 transition-all ${activeImg === pose ? "border-blue-500 scale-105" : "border-transparent"}`}
+              >
+                <img src={pose} className="w-full h-full object-cover" />
+              </button>
+            ))}
           </div>
         </div>
-        <div className="w-[45%]">
-          <div className="my-4">
-            <h1 className="font-bold text-5xl mb-4 text-blue-400">
+
+        {/* Right: Product Info */}
+        <div className="md:w-1/2 p-10 flex flex-col justify-center">
+          <div className="mb-8">
+            <span className="text-blue-600 font-bold tracking-widest uppercase text-xs">
+              {selectedProduct?.product?.typeId?.name}
+            </span>
+            <h1 className="text-4xl font-black text-gray-900 mt-2 mb-4">
               {selectedProduct?.product?.name}
             </h1>
-            <p className="text-3xl">
-              Rs {selectedProduct?.product?.price}
-              <label className="text-green-400 font-bold "> Instock</label>
-            </p>
-          </div>
-          <div>
-            <div className="my-3">
-              <h1 className="text-2xl font-bold">Selected Type</h1>
-              <p className="text-blue-400 text-xl underline mb-3">
-                {selectedProduct?.product?.typeId?.name}
+            <div className="flex items-center gap-4">
+              <p className="text-3xl font-light text-gray-700">
+                ₹{selectedProduct?.product?.price}
               </p>
-              <div>
-                <div>
-                  <p className=" font-bold text-2xl">Colors</p>
-                  {selectedProduct?.product?.variants.map((vr) => (
-                    <div>
-                      {selectedGender === vr.gender ? (
-                        <div className="flex">
-                          <button
-                            onClick={() =>
-                              handleSelectedcolor(vr.color, vr._id)
-                            }
-                            className={` text-xl font-medium px-3 py-2 rounded-2xl border border-blue-200 shadow-2xs my-3
-                             ${vr.color === activeColor ? "text-blue-400" : ""}
-                            `}
-                          >
-                            {vr.color}
-                          </button>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="mx-5">
-                  <p className="text-xl font-semibold mb-2">size</p>
-                  {selectedProduct?.product?.variants.map((vr) => (
-                    <div>
-                      {activeColor === vr?.color &&
-                      selectedGender === vr?.gender &&
-                      vr?.sizes?.every((sz) => sz.stock !== 0) ? (
-                        <div className="flex justify-around">
-                          {vr?.sizes?.map((sz) => (
-                            <button
-                              onClick={() => handleSelectedSize(sz.size)}
-                              className={
-                                sz.size === selectedSize ? "text-blue-400" : ""
-                              }
-                            >
-                              {sz.size}
-                            </button>
-                          ))}
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <span className="flex items-center gap-1 text-green-600 text-sm font-bold bg-green-50 px-3 py-1 rounded-full">
+                <CheckCircle size={14} /> In Stock
+              </span>
             </div>
+          </div>
+
+          <div className="space-y-8">
+            {/* Gender Selection */}
             <div>
-              <h1 className="text-xl  font-semibold mb-2">Gender</h1>
-              <div className="flex justify-between">
-                {uniqueGenders.map((gender) => (
+              <h3 className="text-sm font-bold text-gray-400 uppercase tracking-tighter mb-3">
+                Target
+              </h3>
+              <div className="flex gap-3">
+                {uniqueGenders.map((g) => (
                   <button
-                    key={gender}
-                    className={`${selectedGender === gender ? "text-blue-400 border-blue-400" : " border-gray-400"} px-3 py-2 border rounded-xl`}
-                    onClick={() => handleActiveGender(gender)}
+                    key={g}
+                    onClick={() => setSelectedGender(g)}
+                    className={`px-6 py-2 rounded-xl font-bold border-2 transition-all ${selectedGender === g ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 text-gray-400"}`}
                   >
-                    {gender}
+                    {g}
                   </button>
                 ))}
               </div>
             </div>
-            <div className="my-4">
-              <h1 className="text-2xl font-bold mb-1">Product Description</h1>
-              <p className="font-light">
-                {selectedProduct?.product?.description}
-              </p>
+
+            {/* Color Selection */}
+            <div>
+              <h3 className="text-sm font-bold text-gray-400 uppercase mb-3">
+                Available Colors
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {selectedProduct?.product?.variants
+                  .filter((v) => v.gender === selectedGender)
+                  .map((vr) => (
+                    <button
+                      key={vr._id}
+                      onClick={() => {
+                        setActiveColor(vr.color);
+                        setActiveImg(vr.images.display);
+                      }}
+                      className={`px-4 py-2 rounded-xl border-2 font-medium transition-all ${activeColor === vr.color ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 text-gray-400"}`}
+                    >
+                      {vr.color}
+                    </button>
+                  ))}
+              </div>
             </div>
-            <div className="flex justify-around">
+
+            {/* Size Selection */}
+            <div>
+              <h3 className="text-sm font-bold text-gray-400 uppercase mb-3">
+                Select Size
+              </h3>
+              <div className="flex gap-3">
+                {currentVariant?.sizes.map((sz) => (
+                  <button
+                    key={sz.size}
+                    disabled={sz.stock === 0}
+                    onClick={() => setSelectedSize(sz.size)}
+                    className={`w-12 h-12 rounded-xl border-2 font-bold transition-all flex items-center justify-center ${
+                      sz.stock === 0
+                        ? "bg-gray-50 text-gray-200 border-gray-50 cursor-not-allowed"
+                        : selectedSize === sz.size
+                          ? "border-gray-900 bg-gray-900 text-white"
+                          : "border-gray-200 text-gray-600 hover:border-gray-900"
+                    }`}
+                  >
+                    {sz.size}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-4 pt-6">
               <button
                 onClick={handleAddToCart}
-                className="px-3 py-2 rounded-2xl border border-blue-400 shadow-2xl  capitalize font-bold "
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 flex items-center justify-center gap-2 transition-transform active:scale-95"
               >
-                add to cart
+                <ShoppingBag size={20} /> Add to Cart
               </button>
-              <button onClick={addToWishlist}>wishlist</button>
+              <button
+                onClick={handleWishList}
+                className="px-6 py-4 rounded-2xl border-2 border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-100 transition-colors"
+              >
+                <Heart size={24} />
+              </button>
+            </div>
+
+            <div className="border-t pt-8">
+              <h3 className="font-bold text-gray-900 mb-2">Description</h3>
+              <p className="text-gray-500 leading-relaxed font-light">
+                {selectedProduct?.product?.description}
+              </p>
             </div>
           </div>
         </div>

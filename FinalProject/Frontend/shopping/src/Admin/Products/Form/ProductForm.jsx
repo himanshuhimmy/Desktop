@@ -9,8 +9,8 @@ import AppContext from "../../../ContextStore/AppContext";
 import { ProductSchema } from "./ProductSchema";
 
 const ProductForm = () => {
-  const { activeProductId, ProductType } = useContext(AdminContext);
-  const { allThemes, allCategorys, setRefresh } = useContext(AppContext);
+  const { activeProductId, ProductType, setRefresh } = useContext(AdminContext);
+  const { allThemes, allCategorys, refresh } = useContext(AppContext);
   const navigate = useNavigate();
 
   const {
@@ -51,6 +51,7 @@ const ProductForm = () => {
           `http://localhost:5000/api/products/${activeProductId}`,
         );
         const p = res.data.product;
+        console.log(p);
         reset({
           name: p.name,
           price: p.price,
@@ -85,8 +86,6 @@ const ProductForm = () => {
 
       // THIS UPDATES THE LIST: Trigger global re-fetch in AppContext
       setRefresh((prev) => prev + 1);
-
-      alert("Product synced with database!");
       navigate("/Admin/Products");
     } catch (err) {
       console.error("Update error:", err);
@@ -118,7 +117,7 @@ const ProductForm = () => {
               {...register("isActive")}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
+            <div className="w-11 h-6 bg-gray-300 peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
           </label>
         </div>
       </div>

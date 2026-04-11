@@ -1,173 +1,168 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext } from "react";
 import AppContext from "../../ContextStore/AppContext";
+import axios from "axios";
+import { Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
+import OrderPage from "../OrderSection/OrderPage";
 
 import free from "../../assets/Svgs/memberships/free.svg";
 import fan from "../../assets/Svgs/memberships/fan.svg";
 import hero from "../../assets/Svgs/memberships/hero.svg";
 import legend from "../../assets/Svgs/memberships/legend.svg";
-import axios from "axios";
-const allMemebers = {
-  Free: free,
-  Fan: fan,
-  Hero: hero,
-  Legend: legend,
-};
+
+const allMemebers = { Free: free, Fan: fan, Hero: hero, Legend: legend };
 
 const CartDetails = () => {
-  let { cart, userAddress, setRefresh } = useContext(AppContext);
-  console.log(cart.cart.items.map((product) => product.variantId));
+  const { cart, userAddress, setRefresh } = useContext(AppContext);
 
-  async function addQuantity(id, size) {
-    let Dataquantity = cart.cart.items.flatMap((product) =>
-      product.variantId === id ? product.quantity : "",
-    )[0];
+  const updateQuantity = async (variantId, size, newQuantity) => {
+    if (newQuantity < 1 || newQuantity > 10) return;
+    try {
+      await axios.patch(
+        `http://localhost:5000/api/cart/items/${variantId}/${size}`,
+        { quantity: newQuantity },
+        { params: { userId: userAddress.user._id } },
+      );
+      setRefresh((prev) => prev + 1);
+    } catch (err) {
+      console.error("Update Error:", err);
+    }
+  };
 
-    let quantity = Dataquantity + 1;
-
-    await axios.patch(
-      `http://localhost:5000/api/cart/items/${id}/${size}`,
-      { quantity },
-      {
-        params: { userId: userAddress.user._id },
-      },
-    );
-
-    setRefresh((prev) => prev + 1);
-  }
-  async function subQuantity(id, size) {
-    let Dataquantity = cart.cart.items.flatMap((product) =>
-      product.variantId === id ? product.quantity : "",
-    )[0];
-
-    let quantity = Dataquantity - 1;
-
-    await axios.patch(
-      `http://localhost:5000/api/cart/items/${id}/${size}`,
-      { quantity },
-      {
-        params: { userId: userAddress.user._id },
-      },
-    );
-
-    setRefresh((prev) => prev + 1);
-  }
-
-  async function removeItem(variantId, size) {
-    await axios.delete(
-      `http://localhost:5000/api/cart/items/${variantId}/${size}`,
-      {
-        params: { userId: userAddress.user._id },
-      },
-    );
-
-    setRefresh((prev) => prev + 1);
-  }
+  const removeItem = async (variantId, size) => {
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/cart/items/${variantId}/${size}`,
+        { params: { userId: userAddress.user._id } },
+      );
+      setRefresh((prev) => prev + 1);
+    } catch (err) {
+      console.error("Delete Error:", err);
+    }
+  };
 
   return (
-    <div className="my-6 flex m-auto justify-between">
-      <div className="w-[60%]">
-        <div>
-          <h1 className="text-6xl font-semibold mb-6">Your Shopping Bag</h1>
-          <div className="flex items-center  gap-5">
-            <p className="text-xl font-light  ">
-              <label className="">
-                {cart?.cart?.items?.length} {""}
-              </label>
-              Items selected for your premium collection
-            </p>
-            <div className="bg-blue-100 border border-blue-500 rounded-2xl px-4 py-2 flex justify-around shadow-xl  shadow-blue-200 hover:shadow-2xl transition-all   duration-300">
-              <div className="">
+    <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="flex flex-col lg:flex-row gap-12">
+        <div className="lg:w-[60%]">
+          <header className="mb-10">
+            <h1 className="text-5xl font-black italic tracking-tighter text-gray-900 mb-4">
+              SHOPPING BAG
+            </h1>
+            <div className="flex items-center gap-4">
+              <span className="bg-gray-900 text-white px-3 py-1 rounded-full text-xs font-bold">
+                {cart?.cart?.items?.length || 0} ITEMS
+              </span>
+              <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 px-4 py-2 rounded-2xl">
                 <img
-                  className="h-11"
-                  src={allMemebers[userAddress.user.planId.name]}
-                  alt="svg"
+                  className="h-6"
+                  src={allMemebers[userAddress?.user?.planId?.name]}
+                  alt="tier"
                 />
+                <span className="text-sm font-black text-blue-600 uppercase tracking-widest">
+                  {userAddress?.user?.planId?.name} Benefits Applied
+                </span>
               </div>
-              <p className="text-3xl font-bold text-blue-400">
-                {userAddress.user.planId.name}
-              </p>
             </div>
-          </div>
+          </header>
 
-          <hr className=" m-7 border-blue-200 shadow-2xl" />
+          <div className="space-y-6">
+            {cart?.cart?.items.map((product) => {
+              const variant = product.productId.variants.find(
+                (vr) => vr._id === product.variantId,
+              );
 
-          <div className="my-5">
-            <div className="flex flex-col gap-4 w-full">
-              {cart?.cart.items.map((product) => {
-                const variant = product.productId.variants.find(
-                  (vr) => vr._id === product.variantId,
-                );
+              return (
+                <div
+                  key={`${product.variantId}-${product.size}`}
+                  className="group bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col sm:flex-row gap-6 items-center"
+                >
+                  {/* Image */}
+                  <div className="w-32 h-40 bg-gray-50 rounded-2xl overflow-hidden shrink-0">
+                    <img
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      src={variant?.images?.display}
+                      alt="product"
+                    />
+                  </div>
 
-                return (
-                  <div
-                    key={product.variantId}
-                    className="w-11/12 m-auto rounded-2xl shadow-md p-4 border border-gray-200"
-                  >
-                    <div className="flex gap-4 items-center">
-                      <div className="w-30 h-30 overflow-hidden rounded-xl shrink-0">
-                        <img
-                          className="w-full h-full object-cover"
-                          src={variant?.images?.display}
-                          alt="image"
-                        />
-                      </div>
+                  {/* Details */}
+                  <div className="flex-grow space-y-1 text-center sm:text-left">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {product.productId.name}
+                    </h3>
+                    <p className="text-sm text-gray-400 font-medium">
+                      SIZE: {product.size}
+                    </p>
+                    <p className="text-lg font-black text-blue-500 mt-2">
+                      ₹{product.productId.price}
+                    </p>
+                  </div>
 
-                      <div>
-                        <h1 className="font-semibold text-xl">
-                          {product.productId.name}
-                        </h1>
-                        <p className="text-gray-600">
-                          ₹{product.productId.price}
-                        </p>
-                        <p className="text-sm">Size: {product.size}</p>
-                      </div>
-                    </div>
-                    <div className="flex w-[50%] m-auto justify-between mb-3">
-                      <div className="flex py-2  justify-center items-center gap-3">
-                        <button
-                          onClick={() =>
-                            addQuantity(product.variantId, product.size)
-                          }
-                          disabled={product.quantity === 10}
-                          className={`px-3 py-1 bg-gray-400 rounded-xl font-bold text-xl disabled:bg-gray-200`}
-                        >
-                          +
-                        </button>
-                        <input
-                          className="w-[10%]"
-                          value={product.quantity}
-                          type="text"
-                        />
-                        <button
-                          disabled={product.quantity === 1}
-                          onClick={() =>
-                            subQuantity(product.variantId, product.size)
-                          }
-                          className={`px-3 py-1 bg-gray-400 rounded-xl font-bold text-xl disabled:bg-gray-200`}
-                        >
-                          -
-                        </button>
-                      </div>
+                  {/* Controls */}
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center bg-gray-50 rounded-2xl p-1 border border-gray-100">
                       <button
                         onClick={() =>
-                          removeItem(product.variantId, product.size)
+                          updateQuantity(
+                            product.variantId,
+                            product.size,
+                            product.quantity - 1,
+                          )
                         }
-                        className="text-red-400"
+                        disabled={product.quantity <= 1}
+                        className="p-2 hover:bg-white rounded-xl transition-colors disabled:opacity-30"
                       >
-                        Remove
+                        <Minus size={16} />
+                      </button>
+                      <span className="w-10 text-center font-bold text-gray-800">
+                        {product.quantity}
+                      </span>
+                      <button
+                        onClick={() =>
+                          updateQuantity(
+                            product.variantId,
+                            product.size,
+                            product.quantity + 1,
+                          )
+                        }
+                        disabled={product.quantity >= 10}
+                        className="p-2 hover:bg-white rounded-xl transition-colors disabled:opacity-30"
+                      >
+                        <Plus size={16} />
                       </button>
                     </div>
+
+                    <button
+                      onClick={() =>
+                        removeItem(product.variantId, product.size)
+                      }
+                      className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all"
+                    >
+                      <Trash2 size={20} />
+                    </button>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+
+            {cart?.cart?.items.length === 0 && (
+              <div className="text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-200">
+                <ShoppingBag size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-400 font-bold italic">
+                  Your bag is currently empty.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right: Order Summary (35%) */}
+        <div className="lg:w-[40%]">
+          <div className="sticky top-10">
+            <OrderPage />
           </div>
         </div>
       </div>
-
-      {/*!  order data */}
-      <div className="w-[30%] "> orders </div>
     </div>
   );
 };
