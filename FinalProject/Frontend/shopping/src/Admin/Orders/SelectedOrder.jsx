@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import React from "react";
+import { useSelector } from "react-redux";
 
 const SelectedOrder = () => {
-  const { selectedOrder } = useContext(AdminContext);
+  const selectedOrder = useSelector((state) => state.admin.selectedOrder);
 
   if (!selectedOrder)
     return <div className="p-10 text-center">No order selected</div>;

@@ -1,11 +1,10 @@
 import React from "react";
 import EmptyWishList from "./EmptyWishList";
-import { useContext } from "react";
-import AppContext from "../../ContextStore/AppContext";
+import { useSelector } from "react-redux";
 import WishListDetails from "./WishListDetails";
 
 const WishListPage = () => {
-  let { wishList } = useContext(AppContext);
+  const wishList = useSelector((state) => state.app.wishList);
   return (
     <div className="w-[90%] m-auto">
       {wishList !== null ? <WishListDetails /> : <EmptyWishList />}

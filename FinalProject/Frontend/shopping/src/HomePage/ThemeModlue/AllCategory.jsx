@@ -1,22 +1,19 @@
 import React from "react";
-import { useContext } from "react";
-import AppContext from "../../ContextStore/AppContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedGender, setActiveCategory } from "../../Store/appSlice";
 
 const AllCategory = () => {
-  let {
-    allCategorys,
-    setSelectedGender,
-    selectedGender,
-    activeCategory,
-    setActiveCategory,
-  } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const allCategorys = useSelector((state) => state.app.allCategorys);
+  const selectedGender = useSelector((state) => state.app.selectedGender);
+  const activeCategory = useSelector((state) => state.app.activeCategory);
 
   function handleGender(gender) {
-    setSelectedGender(gender);
+    dispatch(setSelectedGender(gender));
   }
 
   function handleCat(cat) {
-    setActiveCategory(cat);
+    dispatch(setActiveCategory(cat));
   }
   return (
     <div>

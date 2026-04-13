@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilteredOrders } from "../../Store/adminSlice";
 
 const FilterOrders = () => {
-  const { allOrders, setFilteredOrders } = useContext(AdminContext);
+  const dispatch = useDispatch();
+  const allOrders = useSelector((state) => state.admin.allOrders);
 
   const [filter, setFilter] = useState({
     status: "all",
@@ -24,8 +26,8 @@ const FilterOrders = () => {
       data = data.filter((order) => order.paymentStatus === filter.payment);
     }
 
-    setFilteredOrders(data);
-  }, [filter, allOrders, setFilteredOrders]);
+    dispatch(setFilteredOrders(data));
+  }, [filter, allOrders]);
 
   const selectClass =
     "p-2 bg-blue-500 text-white rounded-xl w-full cursor-pointer";

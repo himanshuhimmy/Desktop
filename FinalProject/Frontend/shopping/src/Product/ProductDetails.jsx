@@ -1,17 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import AppContext from "../ContextStore/AppContext";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedGender, setRefresh } from "../Store/appSlice";
 import axios from "axios";
-import { Heart, ShoppingBag, CheckCircle } from "lucide-react"; // Optional: for cleaner icons
+import { Heart, ShoppingBag, CheckCircle } from "lucide-react";
 
 const ProductDetails = () => {
-  const {
-    selectedProduct,
-    selectedGender,
-    setSelectedGender,
-    userData,
-    setCart,
-    setRefresh,
-  } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const selectedProduct = useSelector((state) => state.app.selectedProduct);
+  const selectedGender = useSelector((state) => state.app.selectedGender);
+  const userData = useSelector((state) => state.app.userData);
 
   const [activeColor, setActiveColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
@@ -53,7 +50,7 @@ const ProductDetails = () => {
     try {
       await axios.post("http://localhost:5000/api/cart/items", cartData);
 
-      setRefresh((prev) => prev + 1);
+      dispatch(setRefresh());
     } catch (err) {
       console.error("Cart Error:", err.message);
     }
@@ -70,7 +67,7 @@ const ProductDetails = () => {
 
     try {
       await axios.post("http://localhost:5000/api/wishlist", wishListData);
-      setRefresh((prev) => prev + 1);
+      dispatch(setRefresh());
     } catch (error) {
       console.error("Wish Error:", err.message);
     }
@@ -139,7 +136,7 @@ const ProductDetails = () => {
                 {uniqueGenders.map((g) => (
                   <button
                     key={g}
-                    onClick={() => setSelectedGender(g)}
+                    onClick={() => dispatch(setSelectedGender(g))}
                     className={`px-6 py-2 rounded-xl font-bold border-2 transition-all ${selectedGender === g ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 text-gray-400"}`}
                   >
                     {g}

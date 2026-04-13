@@ -1,19 +1,18 @@
-import React, { useContext, useState, useEffect } from "react";
-import AppContext from "../../ContextStore/AppContext";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedProductId } from "../../Store/appSlice";
 import { Heart } from "lucide-react";
 import CategoryNotFound from "./CategoryNotFound";
 import { NavLink } from "react-router-dom";
 
 const FilteredProducts = () => {
-  let {
-    allProducts,
-    activeTheme,
-    selectedGender,
-    activeCategory,
-    allThemes,
-    selectedProductId,
-    setSelectedProductId,
-  } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const allProducts = useSelector((state) => state.app.allProducts);
+  const activeTheme = useSelector((state) => state.app.activeTheme);
+  const selectedGender = useSelector((state) => state.app.selectedGender);
+  const activeCategory = useSelector((state) => state.app.activeCategory);
+  const allThemes = useSelector((state) => state.app.allThemes);
+  const selectedProductId = useSelector((state) => state.app.selectedProductId);
   let [themeProduct, setThemeProduct] = useState(null);
   let [currentTheme, setCurrentTheme] = useState(null);
 
@@ -45,7 +44,7 @@ const FilteredProducts = () => {
   };
 
   function handleSelectedProduct(id) {
-    setSelectedProductId(id);
+    dispatch(setSelectedProductId(id));
   }
 
   return (

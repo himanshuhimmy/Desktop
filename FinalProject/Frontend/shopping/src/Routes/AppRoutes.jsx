@@ -20,7 +20,6 @@ import CartPage from "../User/CartSection/CartPage";
 import WishListPage from "../User/WishlistSection/WishListPage";
 import ProductDetails from "../Product/ProductDetails";
 import ProductPage from "../Product/ProductPage";
-import { AdminContextProvider } from "../ContextStore/AdminContext";
 import AdminLayout from "../Admin/AdminHome/AdminLayout";
 import ProtectedAdminRoutes from "../Routes/ProtectedAdminRoutes";
 import DashboardPage from "../Admin/Dashboard/DashboardPage";
@@ -39,11 +38,7 @@ const AppRoutes = () => {
       <Route path="/AdminLogin" element={<AdminLoginPage />} />
       <Route
         path="/Admin"
-        element={
-          <AdminContextProvider>
-            <ProtectedAdminRoutes />
-          </AdminContextProvider>
-        }
+        element={<ProtectedAdminRoutes />}
       >
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<DashboardPage />} />

@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedUser, setAllUsers } from "../../Store/adminSlice";
 import axios from "axios";
 
 const AdminSelectedUser = () => {
-  const { selectedUser, setSelectedUser, allUsers, setAllUsers } =
-    useContext(AdminContext);
+  const dispatch = useDispatch();
+  const selectedUser = useSelector((state) => state.admin.selectedUser);
+  const allUsers = useSelector((state) => state.admin.allUsers);
 
   if (!selectedUser)
     return <div className="p-10 text-center">No user selected</div>;
@@ -23,13 +25,13 @@ const AdminSelectedUser = () => {
 
       // Update local state immediately
       const updatedUser = { ...selectedUser, isActive: !selectedUser.isActive };
-      setSelectedUser(updatedUser);
+      dispatch(setSelectedUser(updatedUser));
 
       // Update the main list
       const updatedList = allUsers.users.map((u) =>
         u._id === updatedUser._id ? updatedUser : u,
       );
-      setAllUsers({ ...allUsers, users: updatedList });
+      dispatch(setAllUsers({ ...allUsers, users: updatedList }));
     } catch (err) {
       alert("Failed to update user status");
     }

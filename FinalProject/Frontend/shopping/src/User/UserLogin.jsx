@@ -1,18 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
-import AppContext, { ContextProvider } from "../ContextStore/AppContext";
 import axios from "axios";
 import loginImage from "./../assets/Register&loginPages/userLogin.png";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setInputText, setLoggedIn, setUserData, setUserAddress } from "../Store/appSlice";
 
 const UserLogin = () => {
-  let { inputText, setLoggedIn, setInputText, setUserData, setUserAddress } =
-    useContext(AppContext);
-
+  let inputText = useSelector((state) => state.app.inputText);
+  let dispach = useDispatch();
   const [error, setError] = useState("");
+
   function onChangeHandle(value, field) {
-    setInputText((prev) => ({ ...prev, [field]: value }));
+    dispach(setInputText({ ...inputText, [field]: value }));
   }
 
   let navigate = useNavigate();
@@ -30,15 +31,15 @@ const UserLogin = () => {
       });
 
       const loggedInUser = resp.data.user;
-      setUserData(loggedInUser);
+      dispach(setUserData(loggedInUser));
 
       const result = await axios.get(
         `http://localhost:5000/api/users/${loggedInUser.id}`,
       );
-      setUserAddress(result.data);
+      dispach(setUserAddress(result.data));
 
-      setInputText(null);
-      setLoggedIn(true);
+      dispach(setInputText(null));
+      dispach(setLoggedIn(true));
       navigate("/Home");
     } catch (err) {
       if (err.response) {

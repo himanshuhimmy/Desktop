@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
-import AppContext from "../../ContextStore/AppContext";
+import React from "react";
+import { useSelector } from "react-redux";
 import EmptyCart from "./EmptyCart";
 import CartDetails from "./CartDetails";
 
 const CartPage = () => {
-  const { cart } = useContext(AppContext);
+  const cart = useSelector((state) => state.app.cart);
 
   const isCartEmpty = !cart || !cart.cart || cart.cart.items.length === 0;
 

@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 import dashboard from "../../assets/Svgs/Admin/Sidebar/bar.svg";
 import order from "../../assets/Svgs/Admin/Sidebar/cart.svg";
 import user from "../../assets/Svgs/Admin/Sidebar/users.svg";
 import product from "../../assets/Svgs/Admin/Sidebar/bag.svg";
-import { AdminContext } from "../../ContextStore/AdminContext";
 
 const baseClass =
   "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 mb-1";
@@ -12,7 +12,7 @@ const activeClass = "bg-blue-600 text-white shadow-md shadow-blue-200";
 const inactiveClass = "text-gray-500 hover:bg-blue-50 hover:text-blue-600";
 
 const SideBar = () => {
-  const { adminData } = useContext(AdminContext);
+  const adminData = useSelector((state) => state.admin.adminData);
 
   const username = adminData?.admin?.username || "Admin";
   const role = adminData?.admin?.role || "Manager";

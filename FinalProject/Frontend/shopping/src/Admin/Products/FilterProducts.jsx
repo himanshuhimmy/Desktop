@@ -1,11 +1,13 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
-import AppContext from "../../ContextStore/AppContext";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilteredProducts } from "../../Store/adminSlice";
 
 const FilterProducts = () => {
-  const { setFilteredProducts, allProducts, refresh } =
-    useContext(AdminContext);
-  const { allCategorys, allThemes } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const allProducts = useSelector((state) => state.admin.allProducts);
+  const refresh = useSelector((state) => state.admin.refresh);
+  const allCategorys = useSelector((state) => state.app.allCategorys);
+  const allThemes = useSelector((state) => state.app.allThemes);
 
   const [filterState, setFilterState] = useState({
     theme: "All",
@@ -49,8 +51,8 @@ const FilterProducts = () => {
         : b.price - a.price;
     });
     console.log("filterd the data");
-    setFilteredProducts(data);
-  }, [filterState, allProducts, setFilteredProducts, refresh]);
+    dispatch(setFilteredProducts(data));
+  }, [filterState, allProducts, refresh]);
 
   const handleOnchange = (field, value) => {
     setFilterState((prev) => ({ ...prev, [field]: value }));

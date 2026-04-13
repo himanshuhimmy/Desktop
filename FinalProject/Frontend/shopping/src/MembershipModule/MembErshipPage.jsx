@@ -1,10 +1,10 @@
-import React, { useContext, useState } from "react";
-import AppContext from "../ContextStore/AppContext";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import add from "../assets/Svgs/add.svg";
 import sub from "../assets/Svgs/minus.svg";
 
 const MembErshipPage = () => {
-  let { membershipInfo } = useContext(AppContext);
+  const membershipInfo = useSelector((state) => state.app.membershipInfo);
 
   let [active, setActive] = useState(null);
 

@@ -1,16 +1,19 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { AdminContext } from "../../../ContextStore/AdminContext";
-import AppContext from "../../../ContextStore/AppContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setRefresh } from "../../../Store/adminSlice";
 import { ProductSchema } from "./ProductSchema";
 
 const ProductForm = () => {
-  const { activeProductId, ProductType, setRefresh } = useContext(AdminContext);
-  const { allThemes, allCategorys, refresh } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const activeProductId = useSelector((state) => state.admin.activeProductId);
+  const ProductType = useSelector((state) => state.admin.ProductType);
+  const allThemes = useSelector((state) => state.app.allThemes);
+  const allCategorys = useSelector((state) => state.app.allCategorys);
   const navigate = useNavigate();
 
   const {
@@ -84,8 +87,8 @@ const ProductForm = () => {
         data,
       );
 
-      // THIS UPDATES THE LIST: Trigger global re-fetch in AppContext
-      setRefresh((prev) => prev + 1);
+      // THIS UPDATES THE LIST: Trigger global re-fetch
+      dispatch(setRefresh());
       navigate("/Admin/Products");
     } catch (err) {
       console.error("Update error:", err);

@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
-import AppContext from "../../ContextStore/AppContext";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setRefresh } from "../../Store/appSlice";
 import axios from "axios";
 import { Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import OrderPage from "../OrderSection/OrderPage";
@@ -12,7 +13,9 @@ import legend from "../../assets/Svgs/memberships/legend.svg";
 const allMemebers = { Free: free, Fan: fan, Hero: hero, Legend: legend };
 
 const CartDetails = () => {
-  const { cart, userAddress, setRefresh } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.app.cart);
+  const userAddress = useSelector((state) => state.app.userAddress);
 
   const updateQuantity = async (variantId, size, newQuantity) => {
     if (newQuantity < 1 || newQuantity > 10) return;
@@ -22,7 +25,7 @@ const CartDetails = () => {
         { quantity: newQuantity },
         { params: { userId: userAddress.user._id } },
       );
-      setRefresh((prev) => prev + 1);
+      dispatch(setRefresh());
     } catch (err) {
       console.error("Update Error:", err);
     }
@@ -34,7 +37,7 @@ const CartDetails = () => {
         `http://localhost:5000/api/cart/items/${variantId}/${size}`,
         { params: { userId: userAddress.user._id } },
       );
-      setRefresh((prev) => prev + 1);
+      dispatch(setRefresh());
     } catch (err) {
       console.error("Delete Error:", err);
     }

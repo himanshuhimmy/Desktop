@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setFilteredUsers } from "../../Store/adminSlice";
 
 const FilterUsers = () => {
-  const { allUsers, setFilteredUsers } = useContext(AdminContext);
+  const dispatch = useDispatch();
+  const allUsers = useSelector((state) => state.admin.allUsers);
   const [filter, setFilter] = useState({ search: "", status: "all" });
 
   useEffect(() => {
@@ -25,8 +27,8 @@ const FilterUsers = () => {
       data = data.filter((u) => u.isActive === targetStatus);
     }
 
-    setFilteredUsers(data);
-  }, [filter, allUsers, setFilteredUsers]);
+    dispatch(setFilteredUsers(data));
+  }, [filter, allUsers]);
 
   const selectClass =
     "p-2 bg-blue-500 text-white rounded-xl w-full cursor-pointer";

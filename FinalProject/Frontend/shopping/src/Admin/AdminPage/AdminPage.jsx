@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
-import axios from "axios";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setAdminLoggedIn, setAdminData } from "../../Store/adminSlice";
 
 const AdminPage = () => {
-  const { setAdminLoggedIn, setAdminData, stats } = useContext(AdminContext);
+  const dispatch = useDispatch();
+  const stats = useSelector((state) => state.admin.stats);
 
   const HandleLogout = () => {
-    setAdminData(null);
-    setAdminLoggedIn(false);
+    dispatch(setAdminData(null));
+    dispatch(setAdminLoggedIn(false));
   };
 
   if (!stats)

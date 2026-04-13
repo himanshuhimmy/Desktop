@@ -1,9 +1,8 @@
-import { useContext } from "react";
+import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import { AdminContext } from "../ContextStore/AdminContext";
 
 const ProtectedAdminRoutes = () => {
-  const { adminLoggedIn } = useContext(AdminContext);
+  const adminLoggedIn = useSelector((state) => state.admin.adminLoggedIn);
 
   return adminLoggedIn ? <Outlet /> : <Navigate to="/AdminLogin" />;
 };

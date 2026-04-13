@@ -1,25 +1,25 @@
-import React, { useContext } from "react";
-import AppContext from "../ContextStore/AppContext";
-import order from "../assets/Svgs/User/order.svg";
 import profile from "../assets/Svgs/User/user.svg";
 import AddressForm from "./AddressFrom/AddressForm";
 import { LogOut, Package, ShieldCheck, Calendar } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setLoggedIn,
+  setSelectedProduct,
+  setSelectedProductId,
+  setUserAddress,
+} from "../Store/appSlice";
 
 const UserProfile = () => {
-  const {
-    setLoggedIn,
-    userData,
-    userAddress,
-    setUserAddress,
-    setSelectedProductId,
-    setSelectedProduct,
-  } = useContext(AppContext);
+  let dispach = useDispatch();
+
+  let userData = useSelector((state) => state.app.userData);
+  let userAddress = useSelector((state) => state.app.userAddress);
 
   const handleLoggOut = () => {
-    setLoggedIn(false);
-    setUserAddress(null);
-    setSelectedProductId(null);
-    setSelectedProduct(null);
+    dispach(setLoggedIn(false));
+    dispach(setUserAddress(null));
+    dispach(setSelectedProductId(null));
+    dispach(setSelectedProduct(null));
   };
 
   const tierStyles = {

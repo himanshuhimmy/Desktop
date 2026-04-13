@@ -1,18 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import React, { useContext } from "react";
+import React from "react";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
-import AppContext from "../ContextStore/AppContext";
+
 import axios from "axios";
 import adminLoginPhoto from "./../assets/Register&loginPages/AdminLogin.jpg";
-import { AdminContext } from "../ContextStore/AdminContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setAdminData, setAdminLoggedIn } from "../Store/adminSlice";
+import { setInputText } from "../Store/appSlice";
 
 const AdminLogin = () => {
-  let { inputText, setInputText } = useContext(AppContext);
-  let { setAdminData, adminLoggedIn, setAdminLoggedIn } =
-    useContext(AdminContext);
+  let inputText = useSelector((state) => state.app.inputText);
+  const dispatch = useDispatch();
+  const adminLoggedIn = useSelector((state) => state.admin.adminLoggedIn);
   function onChangeHandle(value, field) {
-    setInputText((prev) => ({ ...prev, [field]: value }));
+    dispatch(setInputText({ ...inputText, [field]: value }));
   }
 
   const navigate = useNavigate();
@@ -27,10 +29,10 @@ const AdminLogin = () => {
         password: inputText.password,
       });
 
-      setAdminData(response.data);
-      setInputText(null);
+      dispatch(setAdminData(response.data));
+      dispatch(setInputText(null));
 
-      setAdminLoggedIn(true);
+      dispatch(setAdminLoggedIn(true));
       navigate("/Admin/dashboard");
     };
     data();

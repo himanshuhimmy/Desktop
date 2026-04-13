@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedOrder } from "../../Store/adminSlice";
 
 const OrderList = () => {
-  const { filteredOrders, setSelectedOrder } = useContext(AdminContext);
+  const dispatch = useDispatch();
+  const filteredOrders = useSelector((state) => state.admin.filteredOrders);
   const navigate = useNavigate();
 
   const handleSelect = (order) => {
-    setSelectedOrder(order); // Save the order to context for the details page
+    dispatch(setSelectedOrder(order));
     navigate("/Admin/Orders/selectedOrder");
   };
 

@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedUser } from "../../Store/adminSlice";
 
 const UserList = () => {
-  const { filteredUsers, setSelectedUser } = useContext(AdminContext);
+  const dispatch = useDispatch();
+  const filteredUsers = useSelector((state) => state.admin.filteredUsers);
   const navigate = useNavigate();
 
   const handleSelect = (user) => {
-    setSelectedUser(user);
+    dispatch(setSelectedUser(user));
     navigate("/Admin/Users/selectedUser");
   };
 

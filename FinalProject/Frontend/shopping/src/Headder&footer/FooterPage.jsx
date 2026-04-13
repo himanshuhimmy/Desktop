@@ -1,5 +1,6 @@
-import React, { useContext } from "react";
-import AppContext from "../ContextStore/AppContext";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveTheme } from "../Store/appSlice";
 import ThemeIcon from "../assets/Svgs/ThemeIcon.svg";
 
 import insta from "../assets/Svgs/Socials/InstaGram.svg";
@@ -8,14 +9,16 @@ import Whats from "../assets/Svgs/Socials/whatsapp.svg";
 import { Link } from "react-router-dom";
 
 const FooterPage = () => {
-  let { activeTheme, setActiveTheme, allThemes } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const activeTheme = useSelector((state) => state.app.activeTheme);
+  const allThemes = useSelector((state) => state.app.allThemes);
 
   let title = "text-xl font-bold flex mb-4";
   let subtitle = "font-extralight mb-1";
   let socialStyle = "h-5 mb-3";
 
   function handleOnClickTheme(id) {
-    setActiveTheme(id);
+    dispatch(setActiveTheme(id));
   }
 
   return (

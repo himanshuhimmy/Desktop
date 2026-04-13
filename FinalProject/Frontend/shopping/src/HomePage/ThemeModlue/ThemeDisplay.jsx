@@ -1,10 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveTheme } from "../../Store/appSlice";
 import strangerthings from "./../../assets/HomePage/Themes/StrangerTHings.jpg";
 import harrypotter from "./../../assets/HomePage/Themes/HarryPotter.jpg";
 import regular from "./../../assets/HomePage/Themes/Regular.jpg";
 import Marvel from "./../../assets/HomePage/Themes/Marvel.jpeg";
 import Dc from "./../../assets/HomePage/Themes/DC.jpg";
-import AppContext from "../../ContextStore/AppContext";
 
 const themeImages = {
   "69c0314c912b0ce5a0292afd": strangerthings,
@@ -15,7 +16,9 @@ const themeImages = {
 };
 
 const ThemeDisplay = () => {
-  const { allThemes, activeTheme, setActiveTheme } = useContext(AppContext);
+  const dispatch = useDispatch();
+  const allThemes = useSelector((state) => state.app.allThemes);
+  const activeTheme = useSelector((state) => state.app.activeTheme);
 
   const currentTheme = themeImages[activeTheme] || Dc;
 
@@ -33,7 +36,7 @@ const ThemeDisplay = () => {
             allThemes.themes.map((theme) => (
               <button
                 key={theme._id}
-                onClick={() => setActiveTheme(theme._id)}
+                onClick={() => dispatch(setActiveTheme(theme._id))}
                 className="text-white cursor-pointer"
               >
                 <p

@@ -1,12 +1,16 @@
-import React, { useState, useMemo, useContext } from "react"; // Added useMemo
-import AppContext from "../../ContextStore/AppContext";
+import React, { useState, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setRefresh } from "../../Store/appSlice";
 import star from "../../assets/Svgs/star-blue.svg";
 import EmptyThemeList from "./EmptyThemeList";
 import axios from "axios";
 
 const WishListDetails = () => {
-  const { wishList, userData, allThemes, activeTheme, setRefresh } =
-    useContext(AppContext);
+  const dispatch = useDispatch();
+  const wishList = useSelector((state) => state.app.wishList);
+  const userData = useSelector((state) => state.app.userData);
+  const allThemes = useSelector((state) => state.app.allThemes);
+  const activeTheme = useSelector((state) => state.app.activeTheme);
 
   const [selectedThemeModule, setSelectedThemeModule] = useState(
     activeTheme || "all",
@@ -36,7 +40,7 @@ const WishListDetails = () => {
 
     try {
       await axios.post("http://localhost:5000/api/cart/items", cartData);
-      setRefresh((prev) => prev + 1);
+      dispatch(setRefresh());
     } catch (err) {
       console.error("CART ERROR:", err.message);
     }
@@ -49,7 +53,7 @@ const WishListDetails = () => {
         { params: { userId: userData.id } },
       );
 
-      setRefresh((prev) => prev + 1);
+      dispatch(setRefresh());
     } catch (err) {
       console.error("REMOVE ERROR:", err.response?.data?.message);
     }

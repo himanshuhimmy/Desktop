@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { LineChart } from "@mui/x-charts/LineChart";
 
 const RecentOrders = () => {
-  let { stats } = useContext(AdminContext);
+  const stats = useSelector((state) => state.admin.stats);
 
   let [filteredState, setFilteredState] = useState(null);
   let [totalAmount, setTotalAmount] = useState(null);

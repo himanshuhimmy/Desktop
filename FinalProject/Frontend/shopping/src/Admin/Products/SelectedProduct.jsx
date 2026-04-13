@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
-import { AdminContext } from "../../ContextStore/AdminContext";
-import axios from "axios";
+import React from "react";
 import ProductForm from "./Form/ProductForm";
 
 const SelectedProduct = () => {

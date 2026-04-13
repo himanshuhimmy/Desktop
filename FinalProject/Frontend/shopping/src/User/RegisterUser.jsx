@@ -1,20 +1,24 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import AppContext from "../ContextStore/AppContext";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
 import UserRegister from "././../assets/Register&loginPages/UserRegister.png";
+import { useDispatch, useSelector } from "react-redux";
+import { setInputText } from "../Store/appSlice";
 
 const RegisterUser = () => {
-  const { inputText, setInputText, membershipInfo } = useContext(AppContext);
+  let dispach = useDispatch();
+  let inputText = useSelector((state) => state.app.inputText);
+  let membershipInfo = useSelector((state) => state.app.membershipInfo);
+
   const [selectedMembership, setSelectedMembership] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleOnChange = (value, field) => {
-    setInputText((prev) => ({ ...prev, [field]: value }));
+    dispach(setInputText({ ...inputText, [field]: value }));
   };
 
   const handleRegister = async () => {
@@ -41,7 +45,7 @@ const RegisterUser = () => {
       };
 
       await axios.post("http://localhost:5000/api/auth/register", finalData);
-      setInputText(null);
+      dispach(setInputText(null));
       navigate("/");
     } catch (err) {
       setError(

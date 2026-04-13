@@ -1,13 +1,13 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "./AddressSchema";
 import { Plus, Trash2 } from "lucide-react";
-import AppContext from "../../ContextStore/AppContext";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const AddressForm = () => {
-  let { userAddress } = useContext(AppContext);
+  let userAddress = useSelector((State) => State.app.userAddress);
   const {
     register,
     control,

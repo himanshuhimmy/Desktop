@@ -1,9 +1,8 @@
-import React, { useContext } from "react";
-import AppContext from "../ContextStore/AppContext";
 import { Navigate, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const ProtectedRoutes = () => {
-  let { loggedIn } = useContext(AppContext);
+  let loggedIn = useSelector((State) => State.app.loggedIn);
 
   let isAuth = loggedIn;
   return isAuth ? <Outlet /> : <Navigate to="/" />;

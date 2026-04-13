@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AdminContext } from "../../ContextStore/AdminContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setActiveProductId } from "../../Store/adminSlice";
 
 const ProductLists = () => {
-  const { filteredProducts, setActiveProductId } = useContext(AdminContext);
+  const dispatch = useDispatch();
+  const filteredProducts = useSelector((state) => state.admin.filteredProducts);
   const navigate = useNavigate();
 
   const handleActiveId = (id) => {
-    setActiveProductId(id);
+    dispatch(setActiveProductId(id));
     navigate(`/Admin/Products/selectedProduct`);
   };
 

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import AppContext from "../../ContextStore/AppContext";
-import axios from "axios";
+import React from "react";
+import { useSelector } from "react-redux";
 import {
   Package,
   Truck,
@@ -11,21 +10,8 @@ import {
 } from "lucide-react";
 
 const OrderPage = () => {
-  const { setOrders, userData, orders } = useContext(AppContext);
-
-  useEffect(() => {
-    const fetchUserOrders = async () => {
-      try {
-        const result = await axios.get(
-          `http://localhost:5000/api/orders?userId=${userData.id}`,
-        );
-        setOrders(result.data);
-      } catch (err) {
-        console.error("Failed to fetch orders:", err);
-      }
-    };
-    if (userData?.id) fetchUserOrders();
-  }, [userData?.id, setOrders]);
+  const userData = useSelector((state) => state.app.userData);
+  const orders = useSelector((state) => state.app.orders);
 
   const getStatusStyle = (status) => {
     switch (status) {

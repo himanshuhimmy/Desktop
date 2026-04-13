@@ -1,9 +1,8 @@
-import { useContext } from "react";
-import AppContext from "../ContextStore/AppContext";
+import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PublicRoutes = () => {
-  let { loggedIn } = useContext(AppContext);
+  let loggedIn = useSelector((State) => State.app.loggedIn);
 
   let isAuth = loggedIn;
   return !isAuth ? <Outlet /> : <Navigate to={"/Home"} />;
