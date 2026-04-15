@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGender, setRefresh } from "../Store/appSlice";
+import { getMemberPrice } from "../utils/pricing";
 import axios from "axios";
 import { Heart, ShoppingBag, CheckCircle } from "lucide-react";
 
@@ -9,6 +10,9 @@ const ProductDetails = () => {
   const selectedProduct = useSelector((state) => state.app.selectedProduct);
   const selectedGender = useSelector((state) => state.app.selectedGender);
   const userData = useSelector((state) => state.app.userData);
+  const discountPercent = useSelector(
+    (state) => state.app.userAddress?.user?.planId?.discountPercent ?? 0,
+  );
 
   const [activeColor, setActiveColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
@@ -55,7 +59,6 @@ const ProductDetails = () => {
       console.error("Cart Error:", err.message);
     }
   };
-  console.log(selectedProduct.product.themeId._id);
   const handleWishList = async () => {
     let wishListData = {
       userId: userData?.id,
@@ -65,6 +68,7 @@ const ProductDetails = () => {
       size: selectedSize,
     };
 
+    console.log(wishListData);
     try {
       await axios.post("http://localhost:5000/api/wishlist", wishListData);
       dispatch(setRefresh());
@@ -116,10 +120,24 @@ const ProductDetails = () => {
             <h1 className="text-4xl font-black text-gray-900 mt-2 mb-4">
               {selectedProduct?.product?.name}
             </h1>
-            <div className="flex items-center gap-4">
-              <p className="text-3xl font-light text-gray-700">
-                ₹{selectedProduct?.product?.price}
-              </p>
+            <div className="flex items-center gap-4 flex-wrap">
+              {discountPercent > 0 ? (
+                <>
+                  <p className="text-2xl line-through text-gray-400 font-light">
+                    ₹{selectedProduct?.product?.price}
+                  </p>
+                  <p className="text-3xl font-bold text-blue-600">
+                    ₹{getMemberPrice(selectedProduct?.product?.price, discountPercent)}
+                  </p>
+                  <span className="bg-green-100 text-green-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">
+                    {discountPercent}% OFF
+                  </span>
+                </>
+              ) : (
+                <p className="text-3xl font-light text-gray-700">
+                  ₹{selectedProduct?.product?.price}
+                </p>
+              )}
               <span className="flex items-center gap-1 text-green-600 text-sm font-bold bg-green-50 px-3 py-1 rounded-full">
                 <CheckCircle size={14} /> In Stock
               </span>

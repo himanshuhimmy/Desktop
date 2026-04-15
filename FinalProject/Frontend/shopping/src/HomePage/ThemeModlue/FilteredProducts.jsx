@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedProductId } from "../../Store/appSlice";
+import { getMemberPrice } from "../../utils/pricing";
 import { Heart } from "lucide-react";
 import CategoryNotFound from "./CategoryNotFound";
 import { NavLink } from "react-router-dom";
@@ -13,6 +14,9 @@ const FilteredProducts = () => {
   const activeCategory = useSelector((state) => state.app.activeCategory);
   const allThemes = useSelector((state) => state.app.allThemes);
   const selectedProductId = useSelector((state) => state.app.selectedProductId);
+  const discountPercent = useSelector(
+    (state) => state.app.userAddress?.user?.planId?.discountPercent ?? 0,
+  );
   let [themeProduct, setThemeProduct] = useState(null);
   let [currentTheme, setCurrentTheme] = useState(null);
 
@@ -86,9 +90,23 @@ const FilteredProducts = () => {
 
                 {/* Price */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-lg font-bold text-gray-900">
-                    ${product.price}
-                  </span>
+                  {discountPercent > 0 ? (
+                    <>
+                      <span className="text-sm line-through text-gray-400">
+                        ₹{product.price}
+                      </span>
+                      <span className="text-lg font-bold text-blue-600">
+                        ₹{getMemberPrice(product.price, discountPercent)}
+                      </span>
+                      <span className="text-[10px] font-black bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                        {discountPercent}% OFF
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-lg font-bold text-gray-900">
+                      ₹{product.price}
+                    </span>
+                  )}
                 </div>
 
                 {/* Rating */}

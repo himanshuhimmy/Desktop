@@ -8,10 +8,12 @@ const HeadderPage = () => {
   return (
     <div className="px-7 shadow-2xl ">
       <header className="flex  items-center justify-between py-3">
-        <div className="flex mx-4 ">
-          img
-          <h1 className="text-3xl font-bold">Luxe</h1>
-        </div>
+        <NavLink to={"/"}>
+          <div className="flex mx-4 ">
+            img
+            <h1 className="text-3xl font-bold">Luxe</h1>
+          </div>
+        </NavLink>
         <div></div>
         <div className="flex gap-6 mx-4 font-semibold">
           <NavLink to={"/UserProfile/UserCart"}>

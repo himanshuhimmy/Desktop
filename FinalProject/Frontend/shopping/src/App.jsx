@@ -28,6 +28,7 @@ function App() {
   const adminRefresh = useSelector((state) => state.admin.refresh);
   const userData = useSelector((state) => state.app.userData);
   const selectedProductId = useSelector((state) => state.app.selectedProductId);
+  let userRefresh = useSelector((state) => state.app.refresh);
 
   // Initial fetches (public data)
   useEffect(() => {
@@ -54,7 +55,8 @@ function App() {
     dispatch(fetchUserCart(userData.id)); // import from appThunks
     dispatch(fetchUserOrders(userData.id)); // import from appThunks
     dispatch(fetchUserAddress(userData.id)); // import from appThunks
-  }, [userData?.id]);
+    dispatch(fetchAllOrders());
+  }, [userData?.id, userRefresh]);
 
   // Re-fetch selected product when ID changes
   useEffect(() => {

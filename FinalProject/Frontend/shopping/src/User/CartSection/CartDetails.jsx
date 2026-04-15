@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setRefresh } from "../../Store/appSlice";
+import { getMemberPrice } from "../../utils/pricing";
 import axios from "axios";
 import { Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import OrderPage from "../OrderSection/OrderPage";
+import CheckoutModal from "./CheckoutModal";
 
 import free from "../../assets/Svgs/memberships/free.svg";
 import fan from "../../assets/Svgs/memberships/fan.svg";
@@ -16,6 +18,11 @@ const CartDetails = () => {
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.app.cart);
   const userAddress = useSelector((state) => state.app.userAddress);
+  const discountPercent = useSelector(
+    (state) => state.app.userAddress?.user?.planId?.discountPercent ?? 0,
+  );
+
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const updateQuantity = async (variantId, size, newQuantity) => {
     if (newQuantity < 1 || newQuantity > 10) return;
@@ -43,7 +50,9 @@ const CartDetails = () => {
     }
   };
 
+
   return (
+    <>
     <div className="max-w-7xl mx-auto px-6 py-12">
       <div className="flex flex-col lg:flex-row gap-12">
         <div className="lg:w-[60%]">
@@ -96,9 +105,29 @@ const CartDetails = () => {
                     <p className="text-sm text-gray-400 font-medium">
                       SIZE: {product.size}
                     </p>
-                    <p className="text-lg font-black text-blue-500 mt-2">
-                      ₹{product.productId.price}
-                    </p>
+                    <div className="flex items-center gap-2 mt-2 flex-wrap justify-center sm:justify-start">
+                      {discountPercent > 0 ? (
+                        <>
+                          <span className="text-sm line-through text-gray-400">
+                            ₹{product.productId.price}
+                          </span>
+                          <span className="text-lg font-black text-blue-500">
+                            ₹
+                            {getMemberPrice(
+                              product.productId.price,
+                              discountPercent,
+                            )}
+                          </span>
+                          <span className="text-[10px] font-black bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                            {discountPercent}% OFF
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-lg font-black text-blue-500">
+                          ₹{product.productId.price}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Controls */}
@@ -134,7 +163,6 @@ const CartDetails = () => {
                         <Plus size={16} />
                       </button>
                     </div>
-
                     <button
                       onClick={() =>
                         removeItem(product.variantId, product.size)
@@ -142,6 +170,14 @@ const CartDetails = () => {
                       className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all"
                     >
                       <Trash2 size={20} />
+                    </button>
+                  </div>
+                  <div>
+                    <button
+                      onClick={() => setSelectedItem(product)}
+                      className="bg-gray-900 hover:bg-gray-700 text-white text-xs font-black uppercase tracking-widest px-4 py-2.5 rounded-2xl transition-all whitespace-nowrap"
+                    >
+                      Order Now
                     </button>
                   </div>
                 </div>
@@ -167,6 +203,13 @@ const CartDetails = () => {
         </div>
       </div>
     </div>
+
+    <CheckoutModal
+      isOpen={!!selectedItem}
+      onClose={() => setSelectedItem(null)}
+      item={selectedItem}
+    />
+    </>
   );
 };
 

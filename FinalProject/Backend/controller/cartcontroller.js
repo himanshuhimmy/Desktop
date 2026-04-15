@@ -1,6 +1,7 @@
 import cartModel from "../models/cartSchema.js";
 import orderModel from "../models/orderSchema.js";
 import productModel from "../models/productSchema.js";
+import userModel from "../models/userSchema.js";
 
 const getUserId = (req) => req?.body?.userId || req?.query?.userId;
 
@@ -153,6 +154,71 @@ export const clearCart = async (req, res) => {
   }
 };
 
+// POST /api/cart/checkout-item  (order one specific cart item)
+export const checkoutSingleItem = async (req, res) => {
+  try {
+    const { variantId, size, shippingAddress, paymentMethod } = req.body;
+    const userId = getUserId(req);
+    if (!userId) return res.status(400).json({ message: "userId is required" });
+    if (!variantId || !size) return res.status(400).json({ message: "variantId and size are required" });
+
+    const cart = await getActiveCart(userId);
+
+    const cartItem = cart.items.find(
+      (i) => i.variantId.toString() === variantId && i.size === size,
+    );
+    if (!cartItem) return res.status(404).json({ message: "Item not found in cart" });
+
+    const product = await productModel.findById(cartItem.productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const variant = product.variants.id(cartItem.variantId);
+    if (!variant) return res.status(404).json({ message: "Variant not found" });
+
+    // Membership discount
+    const user = await userModel.findById(userId).populate("planId");
+    const discountPercent = user?.planId?.discountPercent ?? 0;
+
+    const basePrice = product.discountPrice ?? product.price;
+    const price = +(basePrice * (1 - discountPercent / 100)).toFixed(2);
+    const totalAmount = +(price * cartItem.quantity).toFixed(2);
+    const discountAmount = +((basePrice - price) * cartItem.quantity).toFixed(2);
+
+    const order = await orderModel.create({
+      userId,
+      items: [
+        {
+          productId: product._id,
+          variantId: variant._id,
+          quantity: cartItem.quantity,
+          priceAtPurchase: price,
+          nameAtPurchase: product.name,
+          variantSnapshot: {
+            gender: variant.gender,
+            color: variant.color,
+            size: cartItem.size,
+          },
+        },
+      ],
+      shippingAddress,
+      paymentMethod,
+      totalAmount,
+      discountAmount,
+      placedAt: new Date(),
+    });
+
+    // Remove only this item from the cart
+    cart.items = cart.items.filter(
+      (i) => !(i.variantId.toString() === variantId && i.size === size),
+    );
+    await cart.save();
+
+    res.status(201).json({ order });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // POST /api/cart/checkout
 export const checkout = async (req, res) => {
   try {
@@ -165,7 +231,12 @@ export const checkout = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
+    // Fetch user's membership discount
+    const user = await userModel.findById(userId).populate("planId");
+    const discountPercent = user?.planId?.discountPercent ?? 0;
+
     let totalAmount = 0;
+    let originalTotal = 0;
     const orderItems = [];
 
     for (const item of cart.items) {
@@ -173,7 +244,10 @@ export const checkout = async (req, res) => {
       if (!product) continue;
       const variant = product.variants.id(item.variantId);
       if (!variant) continue;
-      const price = product.discountPrice ?? product.price;
+
+      const basePrice = product.discountPrice ?? product.price;
+      const price = +(basePrice * (1 - discountPercent / 100)).toFixed(2);
+
       orderItems.push({
         productId: product._id,
         variantId: variant._id,
@@ -186,8 +260,13 @@ export const checkout = async (req, res) => {
           size: item.size,
         },
       });
+
       totalAmount += price * item.quantity;
+      originalTotal += basePrice * item.quantity;
     }
+
+    totalAmount = +totalAmount.toFixed(2);
+    const discountAmount = +(originalTotal - totalAmount).toFixed(2);
 
     const order = await orderModel.create({
       userId,
@@ -195,6 +274,7 @@ export const checkout = async (req, res) => {
       shippingAddress,
       paymentMethod,
       totalAmount,
+      discountAmount,
       placedAt: new Date(),
     });
 

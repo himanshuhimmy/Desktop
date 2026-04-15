@@ -1,6 +1,6 @@
 import React from "react";
-import HeadderPage from "../Headder&footer/headderPage";
-import FooterPage from "../Headder&footer/FooterPage";
+import HeadderPage from "../HeaderFooter/HeaderPage";
+import FooterPage from "../HeaderFooter/FooterPage";
 import Button from "../CommonUi/Button";
 import noFound from "../assets/ErrorPages/NotFound.png";
 import { NavLink } from "react-router-dom";

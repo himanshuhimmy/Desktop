@@ -5,11 +5,10 @@ import RegisterUserPage from "../User/RegisterUserPage";
 import UserLogin from "../User/UserLogin";
 import AdminLoginPage from "../Admin/AdminLoginPage";
 import Home from "../HomePage/Home";
-import ContactUs from "../SupportPges/ContactUs";
-import TermsConditions from "../SupportPges/Terms&Conditions";
-
-import Support from "../SupportPges/Support";
-import Policy from "../SupportPges/Policy";
+import ContactUs from "../SupportPages/ContactUs";
+import TermsConditions from "../SupportPages/TermsConditions";
+import Support from "../SupportPages/Support";
+import Policy from "../SupportPages/Policy";
 import NotFound from "../ErrorPages/NotFound";
 import DefaultHome from "../HomePage/DefaultHome";
 import MembErshipPage from "../MembershipModule/MembErshipPage";
@@ -36,10 +35,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/AdminLogin" element={<AdminLoginPage />} />
-      <Route
-        path="/Admin"
-        element={<ProtectedAdminRoutes />}
-      >
+      <Route path="/Admin" element={<ProtectedAdminRoutes />}>
         <Route element={<AdminLayout />}>
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="users" element={<UsersPage />} />
@@ -59,12 +55,11 @@ const AppRoutes = () => {
       <Route element={<PublicRoutes />}>
         <Route index element={<UserLogin />} />
         <Route path="/UserRegister" element={<RegisterUserPage />} />
-
-        <Route path="/support" element={<Support />}>
-          <Route path="contact" element={<ContactUs />} />
-          <Route path="terms" element={<TermsConditions />} />
-          <Route path="policy" element={<Policy />} />
-        </Route>
+      </Route>
+      <Route path="/support" element={<Support />}>
+        <Route path="contact" element={<ContactUs />} />
+        <Route path="terms" element={<TermsConditions />} />
+        <Route path="policy" element={<Policy />} />
       </Route>
 
       {/* ✅ Home is outside PublicRoutes */}

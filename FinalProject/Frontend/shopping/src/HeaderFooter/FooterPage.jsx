@@ -6,7 +6,7 @@ import ThemeIcon from "../assets/Svgs/ThemeIcon.svg";
 import insta from "../assets/Svgs/Socials/InstaGram.svg";
 import faceboobk from "../assets/Svgs/Socials/Facebook.svg";
 import Whats from "../assets/Svgs/Socials/whatsapp.svg";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const FooterPage = () => {
   const dispatch = useDispatch();
@@ -52,15 +52,30 @@ const FooterPage = () => {
       <div>
         <h1 className={title}>Support</h1>
         <div className="flex flex-col">
-          <Link className={subtitle} to="/support/contact">
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "font-extralight mb-1 text-blue-400" : subtitle
+            }
+            to={"/support/contact"}
+          >
             Contact Us
-          </Link>
-          <Link className={subtitle} to="/support/terms">
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "font-extralight mb-1 text-blue-400" : subtitle
+            }
+            to={"/support/terms"}
+          >
             Terms & Conditions
-          </Link>
-          <Link className={subtitle} to="/support/policy">
+          </NavLink>
+          <NavLink
+            className={({ isActive }) =>
+              isActive ? "font-extralight mb-1 text-blue-400" : subtitle
+            }
+            to={"/support/policy"}
+          >
             Privacy Policy
-          </Link>
+          </NavLink>
         </div>
       </div>
       <div>

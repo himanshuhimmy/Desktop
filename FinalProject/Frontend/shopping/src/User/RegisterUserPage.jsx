@@ -1,6 +1,6 @@
 import React from "react";
 import RegisterUser from "./RegisterUser";
-import RegisterFooter from "../Headder&footer/RegisterFooter";
+import RegisterFooter from "../HeaderFooter/RegisterFooter";
 
 const RegisterUserPage = () => {
   return (
