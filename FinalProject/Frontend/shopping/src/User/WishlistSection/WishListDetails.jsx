@@ -77,7 +77,7 @@ const WishListDetails = () => {
       </div>
 
       {/* Theme Selection Tabs */}
-      <div className="flex gap-7 text-lg mt-8 px-4 border-b border-gray-100 pb-2">
+      <div className="flex flex-wrap gap-4 text-base md:text-lg mt-8 px-4 border-b border-gray-100 pb-2 overflow-x-auto">
         <button
           onClick={() => handleSelectedThemeModule("all")}
           className={`pb-2 transition-all ${

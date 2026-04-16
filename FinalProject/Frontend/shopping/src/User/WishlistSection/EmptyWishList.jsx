@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 const EmptyWishList = () => {
   return (
     <div className="min-h-screen flex flex-col justify-center items-center p-4">
-      <div className="w-[50%] mb-6">
+      <div className="w-full max-w-sm mx-auto mb-6">
         <img className="w-full object-contain" src={List} alt="empty" />
       </div>
 

@@ -59,7 +59,7 @@ const RegisterUser = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
-      <div className="flex w-full max-w-6xl h-[850px] bg-white rounded-[40px] shadow-2xl overflow-hidden">
+      <div className="flex flex-col lg:flex-row w-full max-w-6xl bg-white rounded-[40px] shadow-2xl overflow-hidden">
         <div className="hidden lg:block w-1/2 relative">
           <img
             className="w-full h-full object-cover"
@@ -124,8 +124,8 @@ const RegisterUser = () => {
                 />
               </div>
 
-              <div className="flex gap-4">
-                <div className="w-1/2">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="w-full sm:w-1/2">
                   <label className="text-xs font-bold uppercase text-gray-400 ml-1">
                     Password
                   </label>
@@ -135,7 +135,7 @@ const RegisterUser = () => {
                     type="password"
                   />
                 </div>
-                <div className="w-1/2">
+                <div className="w-full sm:w-1/2">
                   <label className="text-xs font-bold uppercase text-gray-400 ml-1">
                     Confirm
                   </label>

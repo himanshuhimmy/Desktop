@@ -22,69 +22,72 @@ const FooterPage = () => {
   }
 
   return (
-    <div className="bg-[rgb(15,23,42)] p-6 flex justify-around text-white">
-      <div className="w-[25%]">
-        <h1 className={title}>
-          <img className="h-7" src={ThemeIcon} alt="icon " />
-          Premium Themes
-        </h1>
-        <p className={subtitle}>
-          Elevating your fandom with high-quality, authentic, and premium gear
-          from the worlds you love.
-        </p>
-      </div>
-      <div>
-        <h1 className={title}>Themes</h1>
-        {allThemes !== null &&
-          allThemes.themes.map((themes) => {
-            return (
-              <p>
+    <div className="bg-[rgb(15,23,42)] p-6 text-white">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+        <div>
+          <h1 className={title}>
+            <img className="h-7" src={ThemeIcon} alt="icon" />
+            Premium Themes
+          </h1>
+          <p className={subtitle}>
+            Elevating your fandom with high-quality, authentic, and premium gear
+            from the worlds you love.
+          </p>
+        </div>
+
+        <div>
+          <h1 className={title}>Themes</h1>
+          {allThemes !== null &&
+            allThemes.themes.map((themes) => (
+              <p key={themes._id}>
                 <button
                   onClick={() => handleOnClickTheme(themes._id)}
-                  className={` ${themes._id === activeTheme ? "mb-1 font-normal text-[rgb(35,63,143)]" : subtitle}`}
+                  className={`${themes._id === activeTheme ? "mb-1 font-normal text-[rgb(35,63,143)]" : subtitle}`}
                 >
                   {themes.name}
                 </button>
               </p>
-            );
-          })}
-      </div>
-      <div>
-        <h1 className={title}>Support</h1>
-        <div className="flex flex-col">
-          <NavLink
-            className={({ isActive }) =>
-              isActive ? "font-extralight mb-1 text-blue-400" : subtitle
-            }
-            to={"/support/contact"}
-          >
-            Contact Us
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              isActive ? "font-extralight mb-1 text-blue-400" : subtitle
-            }
-            to={"/support/terms"}
-          >
-            Terms & Conditions
-          </NavLink>
-          <NavLink
-            className={({ isActive }) =>
-              isActive ? "font-extralight mb-1 text-blue-400" : subtitle
-            }
-            to={"/support/policy"}
-          >
-            Privacy Policy
-          </NavLink>
+            ))}
         </div>
-      </div>
-      <div>
-        <h1 className={title}>Socials</h1>
-        <p className=" flex flex-col justify-center">
-          <img className={socialStyle} src={insta} alt="insta" />
-          <img className={socialStyle} src={faceboobk} alt="facebbok" />
-          <img className={socialStyle} src={Whats} alt="whatsapp" />
-        </p>
+
+        <div>
+          <h1 className={title}>Support</h1>
+          <div className="flex flex-col">
+            <NavLink
+              className={({ isActive }) =>
+                isActive ? "font-extralight mb-1 text-blue-400" : subtitle
+              }
+              to={"/support/contact"}
+            >
+              Contact Us
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive ? "font-extralight mb-1 text-blue-400" : subtitle
+              }
+              to={"/support/terms"}
+            >
+              Terms & Conditions
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive ? "font-extralight mb-1 text-blue-400" : subtitle
+              }
+              to={"/support/policy"}
+            >
+              Privacy Policy
+            </NavLink>
+          </div>
+        </div>
+
+        <div>
+          <h1 className={title}>Socials</h1>
+          <div className="flex flex-col">
+            <img className={socialStyle} src={insta} alt="insta" />
+            <img className={socialStyle} src={faceboobk} alt="facebook" />
+            <img className={socialStyle} src={Whats} alt="whatsapp" />
+          </div>
+        </div>
       </div>
     </div>
   );

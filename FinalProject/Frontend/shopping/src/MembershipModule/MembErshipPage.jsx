@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import add from "../assets/Svgs/add.svg";
 import sub from "../assets/Svgs/minus.svg";
+import { cn } from "../utils/cn";
 
 const MembErshipPage = () => {
   const membershipInfo = useSelector((state) => state.app.membershipInfo);
@@ -76,8 +77,8 @@ const MembErshipPage = () => {
 
   return (
     <div className="bg-[#f6f6f8] p-5">
-      <div className="w-[90%] m-auto p-7 ">
-        <div className="text-center w-[50%] m-auto mb-5">
+      <div className="w-full max-w-7xl mx-auto px-4 py-7">
+        <div className="text-center w-full max-w-xl mx-auto mb-5">
           <p className="text-[#2960cb] mb-2 underline">Premium Membership</p>
           <h1 className="text-4xl font-extrabold mb-1">
             Choose Your LUXE Tier
@@ -87,18 +88,20 @@ const MembErshipPage = () => {
             collections, and priority support tailored for your lifestyle
           </p>
         </div>
-        <div className="p-4  flex justify-around ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-4">
           {membershipInfo !== null &&
             membershipInfo.memberships.map((info) => {
               return (
                 <div
                   key={info._id}
-                  className={`w-[23%] p-5 ${borderColour[info.name]} rounded-2xl ${bgColours[info.name]} shadow-2xl`}
+                  className={cn(
+                    "w-full p-5 rounded-2xl shadow-2xl",
+                    borderColour[info.name],
+                    bgColours[info.name],
+                  )}
                 >
-                  <div className={``}>
-                    <h1
-                      className={`${tierColors[info.name]} text-xl mb-4 font-bold`}
-                    >
+                  <div>
+                    <h1 className={cn("text-xl mb-4 font-bold", tierColors[info.name])}>
                       {info.name}
                     </h1>
                     <div className="flex mb-4">
@@ -110,7 +113,7 @@ const MembErshipPage = () => {
                       </p>
                     </div>
                     <div className="mx-5 text-center">
-                      <button className={buttonColour[info.name]}>
+                      <button className={cn(buttonColour[info.name])}>
                         Select Plan
                       </button>
                     </div>
@@ -143,7 +146,7 @@ const MembErshipPage = () => {
               </button>
 
               {active === index && (
-                <p className="mt-4 text-gray-600 w-[80%] transition-all duration-300">
+                <p className="mt-4 text-gray-600 w-full md:w-[80%] transition-all duration-300">
                   {item.a}
                 </p>
               )}

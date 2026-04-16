@@ -40,8 +40,8 @@ const AdminLogin = () => {
   console.log(adminLoggedIn);
   return (
     <div className="flex justify-center items-center  min-h-screen ">
-      <div className="flex w-[80%] rounded-3xl shadow-2xl h-[90vh]   overflow-hidden">
-        <div className="w-[50%] flex-col items-center justify-center p-4 m-4">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl rounded-3xl shadow-2xl overflow-hidden">
+        <div className="w-full md:w-1/2 flex flex-col justify-center p-8">
           <div className="my-5">
             <h1 className="text-3xl font-bold mb-2">Secure Admin Portals</h1>
             <p className="text-xl font-normal text-slate-500">
@@ -66,14 +66,14 @@ const AdminLogin = () => {
             />
           </div>
           <Button onClick={handleAdminLogin}>Access Dashboard</Button>
-          <div className=" flex justify-around my-6">
-            <p> public Global Node: NYC-01</p>
-            <p> verified_user SSL Encrypted </p>
-            <p> © 2024 LUXE INC.</p>
+          <div className="flex flex-wrap justify-around gap-2 my-6 text-sm text-gray-500">
+            <p>Global Node: NYC-01</p>
+            <p>SSL Encrypted</p>
+            <p>© 2024 LUXE INC.</p>
           </div>
         </div>
 
-        <div className="w-[50%] overflow-hidden">
+        <div className="hidden md:block md:w-1/2 overflow-hidden">
           <img
             className="w-full  h-full object-cover hover:scale-110 transition-all duration-500 opacity-95"
             src={adminLoginPhoto}

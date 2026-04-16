@@ -53,7 +53,7 @@ const FilteredProducts = () => {
 
   return (
     <>
-      <div className="w-[80%] m-auto mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 my-6">
+      <div className="w-full max-w-7xl mx-auto px-4 mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 my-6">
         {themeProduct !== null &&
           themeProduct.map((product) => (
             <NavLink

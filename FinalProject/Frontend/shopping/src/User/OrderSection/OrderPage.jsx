@@ -10,6 +10,7 @@ import {
   XCircle,
   RefreshCw,
 } from "lucide-react";
+import { cn } from "../../utils/cn";
 
 const STATUS_FILTERS = [
   { label: "Recent", value: "recent" },
@@ -23,16 +24,37 @@ const STATUS_FILTERS = [
 ];
 
 const STATUS_STYLES = {
-  delivered:  { pill: "bg-green-100 text-green-700 border-green-200",  icon: <CheckCircle size={13} /> },
-  shipped:    { pill: "bg-blue-100 text-blue-700 border-blue-200",     icon: <Truck size={13} /> },
-  confirmed:  { pill: "bg-indigo-100 text-indigo-700 border-indigo-200", icon: <CheckCircle size={13} /> },
-  pending:    { pill: "bg-amber-100 text-amber-700 border-amber-200",  icon: <Clock size={13} /> },
-  cancelled:  { pill: "bg-red-100 text-red-700 border-red-200",        icon: <XCircle size={13} /> },
-  refunded:   { pill: "bg-purple-100 text-purple-700 border-purple-200", icon: <RefreshCw size={13} /> },
+  delivered: {
+    pill: "bg-green-100 text-green-700 border-green-200",
+    icon: <CheckCircle size={13} />,
+  },
+  shipped: {
+    pill: "bg-blue-100 text-blue-700 border-blue-200",
+    icon: <Truck size={13} />,
+  },
+  confirmed: {
+    pill: "bg-indigo-100 text-indigo-700 border-indigo-200",
+    icon: <CheckCircle size={13} />,
+  },
+  pending: {
+    pill: "bg-amber-100 text-amber-700 border-amber-200",
+    icon: <Clock size={13} />,
+  },
+  cancelled: {
+    pill: "bg-red-100 text-red-700 border-red-200",
+    icon: <XCircle size={13} />,
+  },
+  refunded: {
+    pill: "bg-purple-100 text-purple-700 border-purple-200",
+    icon: <RefreshCw size={13} />,
+  },
 };
 
 const getStatusStyle = (status) =>
-  STATUS_STYLES[status] ?? { pill: "bg-gray-100 text-gray-700 border-gray-200", icon: <Clock size={13} /> };
+  STATUS_STYLES[status] ?? {
+    pill: "bg-gray-100 text-gray-700 border-gray-200",
+    icon: <Clock size={13} />,
+  };
 
 const OrderPage = () => {
   const orders = useSelector((state) => state.app.orders);
@@ -47,13 +69,17 @@ const OrderPage = () => {
     if (activeFilter === "recent") {
       // Sort newest first, show all
       return list.sort(
-        (a, b) => new Date(b.placedAt || b.createdAt) - new Date(a.placedAt || a.createdAt),
+        (a, b) =>
+          new Date(b.placedAt || b.createdAt) -
+          new Date(a.placedAt || a.createdAt),
       );
     }
 
     if (activeFilter === "all") {
       return list.sort(
-        (a, b) => new Date(b.placedAt || b.createdAt) - new Date(a.placedAt || a.createdAt),
+        (a, b) =>
+          new Date(b.placedAt || b.createdAt) -
+          new Date(a.placedAt || a.createdAt),
       );
     }
 
@@ -61,13 +87,14 @@ const OrderPage = () => {
     return list
       .filter((o) => o.status === activeFilter)
       .sort(
-        (a, b) => new Date(b.placedAt || b.createdAt) - new Date(a.placedAt || a.createdAt),
+        (a, b) =>
+          new Date(b.placedAt || b.createdAt) -
+          new Date(a.placedAt || a.createdAt),
       );
   }, [allOrders, activeFilter]);
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-
       {/* ── Header ── */}
       <div className="bg-white border-b border-gray-100 py-12 mb-8">
         <div className="max-w-6xl mx-auto px-6">
@@ -81,7 +108,6 @@ const OrderPage = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-6">
-
         {/* ── Filter Pills ── */}
         <div className="flex flex-wrap gap-2 mb-8">
           {STATUS_FILTERS.map((f) => {
@@ -96,16 +122,19 @@ const OrderPage = () => {
               <button
                 key={f.value}
                 onClick={() => setActiveFilter(f.value)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all ${
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all",
                   isActive
                     ? "bg-gray-900 text-white border-gray-900"
-                    : "bg-white text-gray-500 border-gray-200 hover:border-gray-400"
-                }`}
+                    : "bg-white text-gray-500 border-gray-200 hover:border-gray-400",
+                )}
               >
                 {f.label}
                 <span
                   className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
-                    isActive ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
+                    isActive
+                      ? "bg-white/20 text-white"
+                      : "bg-gray-100 text-gray-500"
                   }`}
                 >
                   {count}
@@ -133,7 +162,9 @@ const OrderPage = () => {
                           Order Placed
                         </p>
                         <p className="font-bold text-gray-800">
-                          {new Date(ord.placedAt || ord.createdAt).toLocaleDateString("en-IN", {
+                          {new Date(
+                            ord.placedAt || ord.createdAt,
+                          ).toLocaleDateString("en-IN", {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
@@ -171,7 +202,10 @@ const OrderPage = () => {
 
                     {/* Status Badge */}
                     <div
-                      className={`px-5 py-2 rounded-full border text-xs font-black uppercase tracking-widest flex items-center gap-2 ${pill}`}
+                      className={cn(
+                        "px-5 py-2 rounded-full border text-xs font-black uppercase tracking-widest flex items-center gap-2",
+                        pill,
+                      )}
                     >
                       {icon}
                       {ord.status}
@@ -192,7 +226,8 @@ const OrderPage = () => {
                                 {item.nameAtPurchase}
                               </h4>
                               <p className="text-xs text-gray-400 font-medium uppercase mt-1">
-                                Size: {item.variantSnapshot?.size} &nbsp;·&nbsp; Qty: {item.quantity}
+                                Size: {item.variantSnapshot?.size} &nbsp;·&nbsp;
+                                Qty: {item.quantity}
                               </p>
                               <p className="text-sm font-black text-blue-400 mt-1">
                                 ₹{item.priceAtPurchase}

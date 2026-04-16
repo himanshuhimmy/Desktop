@@ -4,19 +4,19 @@ import { NavLink } from "react-router-dom";
 
 const EmptyCart = () => {
   return (
-    <div className="p-4  h-lvh flex flex-col items-center   ">
-      <div className="w-[40%] m-auto text-center">
-        <div className="w-[90%] m-auto overflow-hidden my-4">
+    <div className="p-4 min-h-screen flex flex-col items-center justify-center">
+      <div className="w-full max-w-sm mx-auto text-center">
+        <div className="w-full overflow-hidden my-4">
           <img
             className="w-full object-contain hover:scale-105 transition-all duration-300"
             src={empty}
             alt="emptyCart"
           />
         </div>
-        <h1 className="text-5xl font-bold tracking-tight mb-4">
+        <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">
           Your Cart is Currently Empty
         </h1>
-        <p className="text-xl font-light">
+        <p className="text-lg md:text-xl font-light">
           It seems you haven't added any luxury pieces to your cart yet. Your
           next masterpiece is waiting to be discovered.
         </p>

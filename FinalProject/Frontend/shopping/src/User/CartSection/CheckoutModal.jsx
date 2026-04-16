@@ -3,13 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getMemberPrice } from "../../utils/pricing";
 import { fetchUserCart, fetchUserOrders } from "../../Store/appThunks";
 import axios from "axios";
-import {
-  MapPin,
-  X,
-  CheckCircle,
-  Loader2,
-  ChevronRight,
-} from "lucide-react";
+import { MapPin, X, CheckCircle, Loader2, ChevronRight } from "lucide-react";
+import { cn } from "../../utils/cn";
 
 const PAYMENT_METHODS = ["COD", "UPI", "Card"];
 
@@ -76,7 +71,6 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto mx-4">
-
         {/* ── Header ── */}
         <div className="sticky top-0 bg-white rounded-t-[2rem] px-8 pt-8 pb-4 border-b border-gray-100 flex items-center justify-between z-10">
           <div>
@@ -96,7 +90,6 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
         </div>
 
         <div className="px-8 py-6 space-y-8">
-
           {/* ── Item Summary ── */}
           <section>
             <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-4">
@@ -115,8 +108,14 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
                   {item.productId.name}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Size: <span className="font-semibold text-gray-600">{item.size}</span>
-                  &nbsp;·&nbsp; Qty: <span className="font-semibold text-gray-600">{item.quantity}</span>
+                  Size:{" "}
+                  <span className="font-semibold text-gray-600">
+                    {item.size}
+                  </span>
+                  &nbsp;·&nbsp; Qty:{" "}
+                  <span className="font-semibold text-gray-600">
+                    {item.quantity}
+                  </span>
                 </p>
                 <div className="flex items-center gap-2 mt-2 flex-wrap">
                   {discountPercent > 0 ? (
@@ -188,7 +187,10 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
                       </p>
                     </div>
                     {selectedIdx === idx && (
-                      <CheckCircle size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                      <CheckCircle
+                        size={18}
+                        className="text-blue-500 shrink-0 mt-0.5"
+                      />
                     )}
                   </label>
                 ))}
@@ -206,11 +208,12 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
                 <button
                   key={method}
                   onClick={() => setPaymentMethod(method)}
-                  className={`px-5 py-2.5 rounded-2xl text-sm font-black border-2 transition-all ${
+                  className={cn(
+                    "px-5 py-2.5 rounded-2xl text-sm font-black border-2 transition-all",
                     paymentMethod === method
                       ? "border-blue-500 bg-blue-50 text-blue-600"
-                      : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300"
-                  }`}
+                      : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300",
+                  )}
                 >
                   {method}
                 </button>
@@ -253,7 +256,6 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
             </button>
           )}
         </div>
-
       </div>
     </div>
   );

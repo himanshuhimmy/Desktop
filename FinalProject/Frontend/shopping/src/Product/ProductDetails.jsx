@@ -4,6 +4,7 @@ import { setSelectedGender, setRefresh } from "../Store/appSlice";
 import { getMemberPrice } from "../utils/pricing";
 import axios from "axios";
 import { Heart, ShoppingBag, CheckCircle } from "lucide-react";
+import { cn } from "../utils/cn";
 
 const ProductDetails = () => {
   const dispatch = useDispatch();
@@ -92,7 +93,12 @@ const ProductDetails = () => {
           <div className="flex gap-4 overflow-x-auto pb-2">
             <button
               onClick={() => setActiveImg(currentVariant?.images?.display)}
-              className={`w-20 h-24 rounded-lg overflow-hidden border-2 transition-all ${activeImg === currentVariant?.images?.display ? "border-blue-500 scale-105" : "border-transparent"}`}
+              className={cn(
+                "w-20 h-24 rounded-lg overflow-hidden border-2 transition-all",
+                activeImg === currentVariant?.images?.display
+                  ? "border-blue-500 scale-105"
+                  : "border-transparent",
+              )}
             >
               <img
                 src={currentVariant?.images?.display}
@@ -103,7 +109,10 @@ const ProductDetails = () => {
               <button
                 key={i}
                 onClick={() => setActiveImg(pose)}
-                className={`w-20 h-24 rounded-lg overflow-hidden border-2 transition-all ${activeImg === pose ? "border-blue-500 scale-105" : "border-transparent"}`}
+                className={cn(
+                  "w-20 h-24 rounded-lg overflow-hidden border-2 transition-all",
+                  activeImg === pose ? "border-blue-500 scale-105" : "border-transparent",
+                )}
               >
                 <img src={pose} className="w-full h-full object-cover" />
               </button>
@@ -127,7 +136,11 @@ const ProductDetails = () => {
                     ₹{selectedProduct?.product?.price}
                   </p>
                   <p className="text-3xl font-bold text-blue-600">
-                    ₹{getMemberPrice(selectedProduct?.product?.price, discountPercent)}
+                    ₹
+                    {getMemberPrice(
+                      selectedProduct?.product?.price,
+                      discountPercent,
+                    )}
                   </p>
                   <span className="bg-green-100 text-green-700 text-xs font-black px-3 py-1 rounded-full uppercase tracking-widest">
                     {discountPercent}% OFF
@@ -155,7 +168,12 @@ const ProductDetails = () => {
                   <button
                     key={g}
                     onClick={() => dispatch(setSelectedGender(g))}
-                    className={`px-6 py-2 rounded-xl font-bold border-2 transition-all ${selectedGender === g ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 text-gray-400"}`}
+                    className={cn(
+                      "px-6 py-2 rounded-xl font-bold border-2 transition-all",
+                      selectedGender === g
+                        ? "border-blue-600 bg-blue-50 text-blue-600"
+                        : "border-gray-100 text-gray-400",
+                    )}
                   >
                     {g}
                   </button>
@@ -178,7 +196,12 @@ const ProductDetails = () => {
                         setActiveColor(vr.color);
                         setActiveImg(vr.images.display);
                       }}
-                      className={`px-4 py-2 rounded-xl border-2 font-medium transition-all ${activeColor === vr.color ? "border-blue-600 bg-blue-50 text-blue-600" : "border-gray-100 text-gray-400"}`}
+                      className={cn(
+                        "px-4 py-2 rounded-xl border-2 font-medium transition-all",
+                        activeColor === vr.color
+                          ? "border-blue-600 bg-blue-50 text-blue-600"
+                          : "border-gray-100 text-gray-400",
+                      )}
                     >
                       {vr.color}
                     </button>
@@ -197,13 +220,12 @@ const ProductDetails = () => {
                     key={sz.size}
                     disabled={sz.stock === 0}
                     onClick={() => setSelectedSize(sz.size)}
-                    className={`w-12 h-12 rounded-xl border-2 font-bold transition-all flex items-center justify-center ${
-                      sz.stock === 0
-                        ? "bg-gray-50 text-gray-200 border-gray-50 cursor-not-allowed"
-                        : selectedSize === sz.size
-                          ? "border-gray-900 bg-gray-900 text-white"
-                          : "border-gray-200 text-gray-600 hover:border-gray-900"
-                    }`}
+                    className={cn(
+                      "w-12 h-12 rounded-xl border-2 font-bold transition-all flex items-center justify-center",
+                      sz.stock === 0 && "bg-gray-50 text-gray-200 border-gray-50 cursor-not-allowed",
+                      sz.stock > 0 && selectedSize === sz.size && "border-gray-900 bg-gray-900 text-white",
+                      sz.stock > 0 && selectedSize !== sz.size && "border-gray-200 text-gray-600 hover:border-gray-900",
+                    )}
                   >
                     {sz.size}
                   </button>

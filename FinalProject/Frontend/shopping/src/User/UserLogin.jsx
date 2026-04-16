@@ -5,7 +5,12 @@ import axios from "axios";
 import loginImage from "./../assets/Register&loginPages/userLogin.png";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setInputText, setLoggedIn, setUserData, setUserAddress } from "../Store/appSlice";
+import {
+  setInputText,
+  setLoggedIn,
+  setUserData,
+  setUserAddress,
+} from "../Store/appSlice";
 
 const UserLogin = () => {
   let inputText = useSelector((state) => state.app.inputText);
@@ -65,46 +70,45 @@ const UserLogin = () => {
     console.log("clicked");
     navigate("/UserRegister");
   }
+
   return (
-    <div className="flex items-center justify-center min-h-lvh bg-taupe-300">
-      <div className="w-[50%] flex flex-col items-center justify-center">
+    <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-taupe-300">
+      {/* Left: form */}
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center px-6 py-10">
         <img src="" alt="logo" />
-
-        <h1 className="text-4xl font-bold">Welcome Back</h1>
-
-        <p className="text-center font-semibold">
-          Please enter your credentials to access your luxury shopping
-          experience.
+        <h1 className="text-3xl md:text-4xl font-bold">Welcome Back</h1>
+        <p className="text-center font-semibold mt-2">
+          Please enter your credentials to access your luxury shopping experience.
         </p>
 
-        <div className="flex flex-col w-[90%] gap-3 mt-6 ">
-          <div className="w-[60%] m-auto">
+        <div className="flex flex-col w-full max-w-sm gap-3 mt-6">
+          <div>
             <p>Username</p>
             <InputBar
+              className="focus:border-blue-500"
               onChange={(e) => onChangeHandle(e.target.value, "email")}
               placeholder="Username"
               type="text"
             />
           </div>
 
-          <div className="w-[60%] m-auto">
+          <div>
             <p>Password</p>
             <InputBar
+              className="focus:border-blue-500"
               onChange={(e) => onChangeHandle(e.target.value, "password")}
               placeholder="Password"
               type="password"
             />
           </div>
-          <div className="flex justify-around w-[50%] m-auto">
+
+          <div className="flex justify-around gap-3">
             <Button onClick={handleLogin}>Login</Button>
             <Button>BACK</Button>
           </div>
+
           {error && (
-            <div className="">
-              <p className="text-red-700 text-sm font-bold text-center">
-                {error}
-              </p>
-            </div>
+            <p className="text-red-700 text-sm font-bold text-center">{error}</p>
           )}
 
           <p className="my-4 text-center py-4">
@@ -119,8 +123,9 @@ const UserLogin = () => {
         </div>
       </div>
 
-      <div className="w-[50%] overflow-hidden h-dvh">
-        <img className="w-fit" src={loginImage} alt="image" />
+      {/* Right: image — hidden on small screens */}
+      <div className="hidden md:block md:w-1/2 overflow-hidden h-screen">
+        <img className="w-full h-full object-cover" src={loginImage} alt="image" />
       </div>
     </div>
   );

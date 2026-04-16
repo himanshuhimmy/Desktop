@@ -1,4 +1,5 @@
 import profile from "../assets/Svgs/User/user.svg";
+import { cn } from "../utils/cn";
 import AddressForm from "./AddressFrom/AddressForm";
 import { LogOut, Package, ShieldCheck, Calendar } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -96,16 +97,16 @@ const UserProfile = () => {
           </div>
 
           <div
-            className={`lg:col-span-5 rounded-4xl p-1 shadow-2xl ${styles.border} overflow-hidden`}
+            className={cn("lg:col-span-5 rounded-4xl p-1 shadow-2xl overflow-hidden", styles.border)}
           >
-            <div className={`${styles.bg} h-full p-8 flex flex-col`}>
+            <div className={cn("h-full p-8 flex flex-col", styles.bg)}>
               <div className="flex justify-between items-start mb-10">
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.2em] opacity-60 mb-1">
                     Current Tier
                   </p>
                   <h2
-                    className={`text-4xl font-black italic tracking-tighter ${styles.text}`}
+                    className={cn("text-4xl font-black italic tracking-tighter", styles.text)}
                   >
                     {currentTier}
                   </h2>
@@ -145,7 +146,10 @@ const UserProfile = () => {
                           className="flex items-center gap-3 text-sm font-medium"
                         >
                           <div
-                            className={`h-1.5 w-1.5 rounded-full ${currentTier === "Legend" ? "bg-blue-400" : "bg-gray-400"}`}
+                            className={cn(
+                              "h-1.5 w-1.5 rounded-full",
+                              currentTier === "Legend" ? "bg-blue-400" : "bg-gray-400",
+                            )}
                           />
                           {perk}
                         </li>

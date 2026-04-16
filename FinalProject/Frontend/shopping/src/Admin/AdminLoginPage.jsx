@@ -3,7 +3,7 @@ import AdminLogin from "./AdminLogin";
 const AdminLoginPage = () => {
   return (
     <div>
-      <header className="flex shadow-2xl justify-around py-3">
+      <header className="flex flex-wrap shadow-2xl justify-around items-center gap-3 py-3 px-4">
         <div className="flex mx-4">
           img
           <h1 className="text-3xl font-bold">Luxe</h1>
