@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { font-family: "Inter", sans-serif; }
+
+  h1, h2, h3 { font-family: "Manrope", sans-serif; }
+
+  h1 { @apply text-2xl font-bold   text-neutral-800 tracking-tight; }
+  h2 { @apply text-xl  font-bold   text-neutral-800 tracking-tight; }
+  h3 { @apply text-lg  font-semibold text-neutral-800; }
+  p  { @apply text-sm  font-normal  text-neutral-600 leading-relaxed; }
+
+  body { @apply bg-neutral text-neutral-800 antialiased; }
+}
+
+@layer components {
+  /* ── Buttons ─────────────────────────────────────────────────────── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+           text-sm font-semibold transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    font-family: "Inter", sans-serif;
+  }
+  .btn-primary   { @apply btn bg-primary text-white hover:bg-primary-dark active:scale-95; }
+  .btn-secondary { @apply btn bg-white text-primary border border-primary hover:bg-primary-50 active:scale-95; }
+  .btn-inverted  { @apply btn bg-white text-primary-dark hover:bg-neutral-100 active:scale-95; }
+  .btn-outlined  { @apply btn bg-transparent text-primary border border-primary hover:bg-primary-50 active:scale-95; }
+  .btn-danger    { @apply btn bg-tertiary text-white hover:bg-tertiary-dark active:scale-95; }
+
+  /* ── Inputs ──────────────────────────────────────────────────────── */
+  .input-base {
+    @apply w-full border border-neutral-200 rounded-lg px-3 py-2.5
+           text-sm text-neutral-800 bg-white
+           placeholder-neutral-600/50
+           focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
+           transition-all duration-150;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────────────── */
+  .card {
+    @apply bg-white rounded-xl border border-neutral-200 shadow-sm p-5;
+  }
+
+  /* ── Sidebar nav item ─────────────────────────────────────────────── */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium
+           transition-colors duration-150 cursor-pointer;
+  }
+  .nav-item-active   { @apply bg-white/10 text-white; }
+  .nav-item-inactive { @apply text-white/60 hover:bg-white/10 hover:text-white; }
+}
