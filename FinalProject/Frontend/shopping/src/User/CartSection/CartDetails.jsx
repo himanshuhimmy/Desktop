@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setRefresh } from "../../Store/appSlice";
 import { getMemberPrice } from "../../utils/pricing";
-import axios from "axios";
+import api from "../../utils/api";
 import { Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import OrderPage from "../OrderSection/OrderPage";
 import CheckoutModal from "./CheckoutModal";
@@ -27,8 +27,8 @@ const CartDetails = () => {
   const updateQuantity = async (variantId, size, newQuantity) => {
     if (newQuantity < 1 || newQuantity > 10) return;
     try {
-      await axios.patch(
-        `http://localhost:5000/api/cart/items/${variantId}/${size}`,
+      await api.patch(
+        `/cart/items/${variantId}/${size}`,
         { quantity: newQuantity },
         { params: { userId: userAddress.user._id } },
       );
@@ -40,8 +40,8 @@ const CartDetails = () => {
 
   const removeItem = async (variantId, size) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/cart/items/${variantId}/${size}`,
+      await api.delete(
+        `/cart/items/${variantId}/${size}`,
         { params: { userId: userAddress.user._id } },
       );
       dispatch(setRefresh());

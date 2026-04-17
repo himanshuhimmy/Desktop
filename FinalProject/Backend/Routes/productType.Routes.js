@@ -6,13 +6,17 @@ import {
   updateProductType,
   deleteProductType,
 } from "../controller/productTypeController.js";
+import { requireAdmin } from "../middleware/authmiddleware.js";
 
 const router = express.Router();
 
+// Public read routes
 router.get("/", getAllProductTypes);
 router.get("/:id", getProductTypeById);
-router.post("/", createProductType);
-router.put("/:id", updateProductType);
-router.delete("/:id", deleteProductType);
+
+// Admin-only write routes
+router.post("/", requireAdmin, createProductType);
+router.put("/:id", requireAdmin, updateProductType);
+router.delete("/:id", requireAdmin, deleteProductType);
 
 export default router;

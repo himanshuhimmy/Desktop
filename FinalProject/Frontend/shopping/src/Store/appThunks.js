@@ -1,12 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-const BASE = "http://localhost:5000/api";
+import api from "../utils/api";
 
 export const fetchMembershipInfo = createAsyncThunk(
   "app/fetchMembershipInfo",
   async () => {
-    const res = await axios.get(`${BASE}/memberships`);
+    const res = await api.get("/memberships");
     return res.data;
   },
 );
@@ -14,7 +12,7 @@ export const fetchMembershipInfo = createAsyncThunk(
 export const fetchAllThemes = createAsyncThunk(
   "app/fetchAllThemes",
   async () => {
-    const res = await axios.get(`${BASE}/themes`);
+    const res = await api.get("/themes");
     return res.data;
   },
 );
@@ -22,7 +20,7 @@ export const fetchAllThemes = createAsyncThunk(
 export const fetchAllCategories = createAsyncThunk(
   "app/fetchAllCategories",
   async () => {
-    const res = await axios.get(`${BASE}/categories`);
+    const res = await api.get("/categories");
     return res.data;
   },
 );
@@ -30,7 +28,7 @@ export const fetchAllCategories = createAsyncThunk(
 export const fetchAllProducts = createAsyncThunk(
   "app/fetchAllProducts",
   async () => {
-    const res = await axios.get(`${BASE}/products`);
+    const res = await api.get("/products");
     return res.data;
   },
 );
@@ -38,7 +36,7 @@ export const fetchAllProducts = createAsyncThunk(
 export const fetchSelectedProduct = createAsyncThunk(
   "app/fetchSelectedProduct",
   async (productId) => {
-    const res = await axios.get(`${BASE}/products/${productId}`);
+    const res = await api.get(`/products/${productId}`);
     return res.data;
   },
 );
@@ -46,7 +44,7 @@ export const fetchSelectedProduct = createAsyncThunk(
 export const fetchUserWishlist = createAsyncThunk(
   "app/fetchUserWishlist",
   async (userId) => {
-    const res = await axios.get(`${BASE}/wishlist?userId=${userId}`);
+    const res = await api.get(`/wishlist?userId=${userId}`);
     return res.data;
   },
 );
@@ -54,7 +52,7 @@ export const fetchUserWishlist = createAsyncThunk(
 export const fetchUserCart = createAsyncThunk(
   "app/fetchUserCart",
   async (userId) => {
-    const res = await axios.get(`${BASE}/cart?userId=${userId}`);
+    const res = await api.get(`/cart?userId=${userId}`);
     return res.data;
   },
 );
@@ -62,7 +60,7 @@ export const fetchUserCart = createAsyncThunk(
 export const fetchUserOrders = createAsyncThunk(
   "app/fetchUserOrders",
   async (userId) => {
-    const res = await axios.get(`${BASE}/orders?userId=${userId}`);
+    const res = await api.get(`/orders?userId=${userId}`);
     return res.data;
   },
 );
@@ -70,7 +68,7 @@ export const fetchUserOrders = createAsyncThunk(
 export const fetchUserAddress = createAsyncThunk(
   "app/fetchUserAddress",
   async (userId) => {
-    const res = await axios.get(`${BASE}/users/${userId}`);
+    const res = await api.get(`/users/${userId}`);
     return res.data;
   },
 );

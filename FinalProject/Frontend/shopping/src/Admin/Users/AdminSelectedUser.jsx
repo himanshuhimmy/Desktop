@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedUser, setAllUsers } from "../../Store/adminSlice";
-import axios from "axios";
+import api from "../../utils/api";
 
 const AdminSelectedUser = () => {
   const dispatch = useDispatch();
@@ -14,13 +14,9 @@ const AdminSelectedUser = () => {
   const toggleStatus = async () => {
     try {
       if (selectedUser.isActive) {
-        await axios.delete(
-          `http://localhost:5000/api/users/${selectedUser._id}`,
-        );
+        await api.delete(`/users/${selectedUser._id}`);
       } else {
-        await axios.patch(
-          `http://localhost:5000/api/users/Activate/${selectedUser._id}`,
-        );
+        await api.patch(`/users/Activate/${selectedUser._id}`);
       }
 
       // Update local state immediately

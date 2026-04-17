@@ -7,14 +7,20 @@ import {
   deleteMembership,
   subscribe,
 } from "../controller/membershipcontroller.js";
+import { requireAuth, requireAdmin } from "../middleware/authmiddleware.js";
 
 const router = express.Router();
 
+// Public read routes
 router.get("/", getAllMemberships);
 router.get("/:id", getMembershipById);
-router.post("/subscribe", subscribe);
-router.post("/", createMembership);
-router.put("/:id", updateMembership);
-router.delete("/:id", deleteMembership);
+
+// User must be logged in to subscribe
+router.post("/subscribe", requireAuth, subscribe);
+
+// Admin-only write routes
+router.post("/", requireAdmin, createMembership);
+router.put("/:id", requireAdmin, updateMembership);
+router.delete("/:id", requireAdmin, deleteMembership);
 
 export default router;

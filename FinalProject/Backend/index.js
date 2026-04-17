@@ -15,14 +15,22 @@ import orderRoutes from "./Routes/order.routes.js";
 import adminRoutes from "./Routes/admin.routes.js";
 import productTypeRoutes from "./Routes/productType.Routes.js";
 
+import cookieParser from "cookie-parser";
 dotenv.config();
 
 const app = express();
 
 // ─── Global middleware ─────────────────────────────────────────────────────────
 
-app.use(cors()); // allow requests from your frontend
+// app.use(cors()); // allow requests from your frontend
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Vite dev server
+    credentials: true, // allows cookies to be sent cross-origin
+  }),
+);
 app.use(express.json()); // parse incoming JSON bodies
+app.use(cookieParser());
 
 // ─── Connect database ──────────────────────────────────────────────────────────
 

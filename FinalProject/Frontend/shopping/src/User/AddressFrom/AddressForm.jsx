@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "./AddressSchema";
 import { Plus, Trash2 } from "lucide-react";
-import axios from "axios";
+import api from "../../utils/api";
 import { useSelector } from "react-redux";
 
 const AddressForm = () => {
@@ -44,10 +44,7 @@ const AddressForm = () => {
   async function onSubmit(data) {
     console.log("Form Data:", data);
     try {
-      await axios.patch(
-        `http://localhost:5000/api/users/${userAddress.user._id}`,
-        data,
-      );
+      await api.patch(`/users/${userAddress.user._id}`, data);
     } catch (error) {
       console.log(error);
     }

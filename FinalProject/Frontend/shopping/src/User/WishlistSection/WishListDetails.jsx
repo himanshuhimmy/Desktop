@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setRefresh } from "../../Store/appSlice";
 import star from "../../assets/Svgs/star-blue.svg";
 import EmptyThemeList from "./EmptyThemeList";
-import axios from "axios";
+import api from "../../utils/api";
 
 const WishListDetails = () => {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ const WishListDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/api/cart/items", cartData);
+      await api.post("/cart/items", cartData);
       dispatch(setRefresh());
     } catch (err) {
       console.error("CART ERROR:", err.message);
@@ -48,8 +48,8 @@ const WishListDetails = () => {
 
   const HandleRemoveWishList = async (productId, variantId, size) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/wishlist/${productId}/${variantId}/${size}`,
+      await api.delete(
+        `/wishlist/${productId}/${variantId}/${size}`,
         { params: { userId: userData.id } },
       );
 

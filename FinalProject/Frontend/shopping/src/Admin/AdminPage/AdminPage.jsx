@@ -1,15 +1,19 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setAdminLoggedIn, setAdminData } from "../../Store/adminSlice";
+import api from "../../utils/api";
 
 const AdminPage = () => {
   const dispatch = useDispatch();
   const stats = useSelector((state) => state.admin.stats);
 
-  const HandleLogout = () => {
+  async function HandleLogout() {
+    await api.post("/admin/logout");
+    dispatch(setAdminLoggedIn(false));
+    dispatch(setAdminData(null));
     dispatch(setAdminData(null));
     dispatch(setAdminLoggedIn(false));
-  };
+  }
 
   if (!stats)
     return <div className="p-10 text-center">Loading Dashboard...</div>;

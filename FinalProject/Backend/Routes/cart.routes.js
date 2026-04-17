@@ -8,9 +8,11 @@ import {
   checkout,
   checkoutSingleItem,
 } from "../controller/cartcontroller.js";
+import { requireAuth } from "../middleware/authmiddleware.js";
 
 const router = express.Router();
 
+router.use(requireAuth);
 router.get("/", getCart);
 router.post("/items", addItem);
 

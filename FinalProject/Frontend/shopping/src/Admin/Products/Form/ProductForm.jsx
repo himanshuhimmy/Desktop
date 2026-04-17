@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../../utils/api";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setRefresh } from "../../../Store/adminSlice";
@@ -50,9 +50,7 @@ const ProductForm = () => {
     if (!activeProductId) return;
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:5000/api/products/${activeProductId}`,
-        );
+        const res = await api.get(`/products/${activeProductId}`);
         const p = res.data.product;
         console.log(p);
         reset({
@@ -82,10 +80,7 @@ const ProductForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/products/${activeProductId}`,
-        data,
-      );
+      await api.put(`/products/${activeProductId}`, data);
 
       // THIS UPDATES THE LIST: Trigger global re-fetch
       dispatch(setRefresh());

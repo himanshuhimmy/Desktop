@@ -9,18 +9,26 @@ import {
   setSelectedProductId,
   setUserAddress,
 } from "../Store/appSlice";
+import api from "../utils/api";
 
 const UserProfile = () => {
-  let dispach = useDispatch();
+  let dispatch = useDispatch();
 
   let userData = useSelector((state) => state.app.userData);
   let userAddress = useSelector((state) => state.app.userAddress);
 
-  const handleLoggOut = () => {
-    dispach(setLoggedIn(false));
-    dispach(setUserAddress(null));
-    dispach(setSelectedProductId(null));
-    dispach(setSelectedProduct(null));
+  const handleLoggOut = async () => {
+    try {
+      await api.post("/auth/logout"); // clears HttpOnly cookie on server
+    } catch (e) {
+      /* ignore */
+    }
+
+    // Then clear Redux state as before
+    dispatch(setLoggedIn(false));
+    dispatch(setUserAddress(null));
+    dispatch(setSelectedProductId(null));
+    dispatch(setSelectedProduct(null));
   };
 
   const tierStyles = {
@@ -97,7 +105,10 @@ const UserProfile = () => {
           </div>
 
           <div
-            className={cn("lg:col-span-5 rounded-4xl p-1 shadow-2xl overflow-hidden", styles.border)}
+            className={cn(
+              "lg:col-span-5 rounded-4xl p-1 shadow-2xl overflow-hidden",
+              styles.border,
+            )}
           >
             <div className={cn("h-full p-8 flex flex-col", styles.bg)}>
               <div className="flex justify-between items-start mb-10">
@@ -106,7 +117,10 @@ const UserProfile = () => {
                     Current Tier
                   </p>
                   <h2
-                    className={cn("text-4xl font-black italic tracking-tighter", styles.text)}
+                    className={cn(
+                      "text-4xl font-black italic tracking-tighter",
+                      styles.text,
+                    )}
                   >
                     {currentTier}
                   </h2>
@@ -148,7 +162,9 @@ const UserProfile = () => {
                           <div
                             className={cn(
                               "h-1.5 w-1.5 rounded-full",
-                              currentTier === "Legend" ? "bg-blue-400" : "bg-gray-400",
+                              currentTier === "Legend"
+                                ? "bg-blue-400"
+                                : "bg-gray-400",
                             )}
                           />
                           {perk}

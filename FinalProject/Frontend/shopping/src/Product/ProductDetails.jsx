@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedGender, setRefresh } from "../Store/appSlice";
 import { getMemberPrice } from "../utils/pricing";
-import axios from "axios";
+import api from "../utils/api";
 import { Heart, ShoppingBag, CheckCircle } from "lucide-react";
 import { cn } from "../utils/cn";
 
@@ -53,7 +53,7 @@ const ProductDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/api/cart/items", cartData);
+      await api.post("/cart/items", cartData);
 
       dispatch(setRefresh());
     } catch (err) {
@@ -71,7 +71,7 @@ const ProductDetails = () => {
 
     console.log(wishListData);
     try {
-      await axios.post("http://localhost:5000/api/wishlist", wishListData);
+      await api.post("/wishlist", wishListData);
       dispatch(setRefresh());
     } catch (error) {
       console.error("Wish Error:", err.message);

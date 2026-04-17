@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
-import axios from "axios";
+import api from "../utils/api";
 import loginImage from "./../assets/Register&loginPages/userLogin.png";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,7 @@ const UserLogin = () => {
     }
 
     try {
-      const resp = await axios.post("http://localhost:5000/api/auth/login", {
+      const resp = await api.post("/auth/login", {
         email: inputText.email,
         password: inputText.password,
       });
@@ -38,9 +38,7 @@ const UserLogin = () => {
       const loggedInUser = resp.data.user;
       dispach(setUserData(loggedInUser));
 
-      const result = await axios.get(
-        `http://localhost:5000/api/users/${loggedInUser.id}`,
-      );
+      const result = await api.get(`/users/${loggedInUser.id}`);
       dispach(setUserAddress(result.data));
 
       dispach(setInputText(null));

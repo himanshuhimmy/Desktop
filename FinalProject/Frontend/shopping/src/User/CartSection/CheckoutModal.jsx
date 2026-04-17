@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getMemberPrice } from "../../utils/pricing";
 import { fetchUserCart, fetchUserOrders } from "../../Store/appThunks";
-import axios from "axios";
+import api from "../../utils/api";
 import { MapPin, X, CheckCircle, Loader2, ChevronRight } from "lucide-react";
 import { cn } from "../../utils/cn";
 
@@ -40,7 +40,7 @@ const CheckoutModal = ({ isOpen, onClose, item }) => {
     setError("");
     setLoading(true);
     try {
-      await axios.post("http://localhost:5000/api/cart/checkout-item", {
+      await api.post("/cart/checkout-item", {
         userId,
         variantId: item.variantId,
         size: item.size,

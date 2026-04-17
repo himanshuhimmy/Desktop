@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import userModel from "../models/userSchema.js";
+import jwt from "jsonwebtoken";
 
 //! POST /api/auth/register
 export const register = async (req, resp) => {
@@ -48,6 +49,18 @@ export const login = async (req, resp) => {
     if (!user.isActive)
       return resp.status(403).json({ message: "Account is deactivated" });
 
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" },
+    );
+
+    resp.cookie("token", token, {
+      httpOnly: true, // JS cannot read this cookie
+      secure: false, // set true in production (HTTPS)
+      sameSite: "lax", // protects against CSRF
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+    });
     user.lastLoginAt = new Date();
     await user.save();
 
@@ -76,4 +89,9 @@ export const getMe = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+};
+
+export const logout = async (req, res) => {
+  res.clearCookie("token", { httpOnly: true, sameSite: "lax" });
+  res.status(200).json({ message: "Logged out successfully" });
 };

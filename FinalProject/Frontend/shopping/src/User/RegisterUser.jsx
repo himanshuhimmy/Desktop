@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/api";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
 import UserRegister from "././../assets/Register&loginPages/UserRegister.png";
@@ -44,7 +44,7 @@ const RegisterUser = () => {
         isActive: true,
       };
 
-      await axios.post("http://localhost:5000/api/auth/register", finalData);
+      await api.post("/auth/register", finalData);
       dispach(setInputText(null));
       navigate("/");
     } catch (err) {

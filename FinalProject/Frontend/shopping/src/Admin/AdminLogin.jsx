@@ -3,7 +3,7 @@ import React from "react";
 import InputBar from "../CommonUi/InputBar";
 import Button from "../CommonUi/Button";
 
-import axios from "axios";
+import api from "../utils/api";
 import adminLoginPhoto from "./../assets/Register&loginPages/AdminLogin.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { setAdminData, setAdminLoggedIn } from "../Store/adminSlice";
@@ -24,7 +24,7 @@ const AdminLogin = () => {
     }
 
     let data = async () => {
-      let response = await axios.post("http://localhost:5000/api/admin/login", {
+      let response = await api.post("/admin/login", {
         username: inputText.username,
         password: inputText.password,
       });

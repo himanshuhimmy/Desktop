@@ -31,8 +31,13 @@ export const adminLogin = async (req, res) => {
 
     const token = createAdminToken(admin);
 
+    res.cookie("adminToken", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
     res.status(200).json({
-      token,
       admin: { id: admin._id, username: admin.username, role: admin.role },
     });
   } catch (err) {
@@ -128,4 +133,10 @@ export const getDashboard = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+};
+
+// ! admin logout
+export const adminLogout = (req, res) => {
+  res.clearCookie("adminToken", { httpOnly: true, sameSite: "lax" });
+  res.status(200).json({ message: "Admin logged out" });
 };
